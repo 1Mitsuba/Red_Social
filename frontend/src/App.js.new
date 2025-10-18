@@ -1,0 +1,27 @@
+import React, { useState } from 'react';
+import { ThemeProvider } from './context/ThemeContext';
+import { AuthProvider } from './context/AuthContext';
+import Sidebar from './components/Sidebar';
+import CollectionsSection from './components/CollectionsSection';
+import DetailPanel from './components/DetailPanel';
+import './styles/globalStyles.css';
+
+const App = () => {
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <div className="app-container">
+          <Sidebar />
+          <div className="main-content">
+            <CollectionsSection onSelectItem={setSelectedItem} />
+            <DetailPanel item={selectedItem} />
+          </div>
+        </div>
+      </AuthProvider>
+    </ThemeProvider>
+  );
+};
+
+export default App;

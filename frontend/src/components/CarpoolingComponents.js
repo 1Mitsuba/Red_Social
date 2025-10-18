@@ -1,123 +1,100 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
+import '../styles/Carpooling.css';
+import '../styles/CustomComponents.css';
+import './styles/globalStyles.css';
 
-// Componente para mostrar una tarjeta de ruta de carpooling
+// Componente para mostrar una tarjeta de ruta de carpooling con estilo moderno
 export const RouteCard = ({ route, onJoin, onViewMap }) => {
   const { theme } = useTheme();
   
   const isAvailable = route.occupiedSeats < route.capacity;
   
   return (
-    <div style={{
-      backgroundColor: theme.colors.card,
-      borderRadius: '8px',
-      padding: '20px',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-      marginBottom: '20px'
-    }}>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '15px'
+    <div className="route-card">
+      <div className="route-header" style={{ 
+        background: theme.colors.primaryGradient || `linear-gradient(135deg, ${theme.colors.primary}, ${theme.colors.primaryLight})`
       }}>
-        <h3 style={{ color: theme.colors.primary, margin: 0 }}>
+        <h3 className="route-title">
           {route.origin} → {route.destination}
         </h3>
-        <span style={{ 
-          backgroundColor: isAvailable ? theme.colors.success : theme.colors.notification,
-          color: 'white',
-          padding: '5px 10px',
-          borderRadius: '4px',
-          fontSize: '0.8rem'
-        }}>
+        <span className={`route-status ${isAvailable ? 'status-available' : 'status-full'}`}>
           {isAvailable ? 'Disponible' : 'Completo'}
         </span>
       </div>
-      
-      <div style={{
-        backgroundColor: `${theme.colors.primary}10`,
-        padding: '15px',
-        borderRadius: '8px',
-        marginBottom: '15px'
-      }}>
-        <div style={{ display: 'flex', marginBottom: '10px' }}>
-          <div style={{ 
-            width: '40px', 
-            height: '40px', 
-            borderRadius: '50%', 
-            backgroundColor: theme.colors.primary,
-            color: 'white',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginRight: '15px',
-            fontWeight: 'bold'
-          }}>
-            {route.driver.charAt(0)}
+      <div className="route-content">
+        <div className="route-driver">
+          <div className="driver-avatar">
+            {route.driver ? route.driver.charAt(0) : 'U'}
           </div>
-          <div>
-            <div style={{ fontWeight: 'bold' }}>{route.driver}</div>
-            <div style={{ fontSize: '0.8rem', color: theme.colors.textLight }}>Conductor</div>
+          <div className="driver-info">
+            <p className="driver-name" style={{ color: theme.colors.text }}>{route.driver || 'Usuario'}</p>
+            <span className="driver-role" style={{ color: theme.colors.textLight }}>Conductor</span>
           </div>
         </div>
-        
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-          <div>
-            <span style={{ fontWeight: 'bold', marginRight: '5px' }}>Horario:</span>
-            <span>{route.time}</span>
+        <div className="route-details">
+          <div className="detail-item">
+            <span className="detail-icon" style={{ color: theme.colors.primary }}>🕒</span>
+            <span className="detail-text" style={{ color: theme.colors.text }}>Hora de salida: {route.time}</span>
           </div>
-          <div>
-            <span style={{ fontWeight: 'bold', marginRight: '5px' }}>Asientos:</span>
-            <span>{route.occupiedSeats}/{route.capacity}</span>
-          </div>
-        </div>
-        
-        <div style={{ marginBottom: '5px' }}>
-          <span style={{ fontWeight: 'bold', marginRight: '5px' }}>Días:</span>
-          <span>{route.days.join(', ')}</span>
-        </div>
-      </div>
-      
-      {route.stops && route.stops.length > 0 && (
-        <div style={{ marginBottom: '15px' }}>
-          <h4 style={{ 
-            color: theme.colors.primary, 
-            borderBottom: `1px solid ${theme.colors.border}`,
-            paddingBottom: '5px',
-            marginBottom: '10px'
-          }}>Paradas</h4>
           
-          {route.stops.map((stop, index) => (
-            <div key={index} style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginBottom: '5px',
-              padding: '5px',
-              backgroundColor: index % 2 === 0 ? `${theme.colors.primary}10` : 'transparent',
-              borderRadius: '4px'
-            }}>
-              <span>{stop.name}</span>
-              <span>{stop.time}</span>
+          <div className="detail-item">
+            <span className="detail-icon" style={{ color: theme.colors.primary }}>📍</span>
+            <span className="detail-text" style={{ color: theme.colors.text }}>Origen: {route.origin}</span>
+          </div>
+          
+          <div className="detail-item">
+            <span className="detail-icon" style={{ color: theme.colors.primary }}>🎯</span>
+            <span className="detail-text" style={{ color: theme.colors.text }}>Destino: {route.destination}</span>
+          </div>
+          
+          <div className="detail-item">
+            <span className="detail-icon" style={{ color: theme.colors.primary }}>👤</span>
+            <span className="detail-text" style={{ color: theme.colors.text }}>
+              {route.occupiedSeats} / {route.capacity} asientos ocupados
+            </span>
+          </div>
+          
+          <div className="route-schedule" style={{ backgroundColor: `${theme.colors.cardBgSecondary || '#f5f5f5'}` }}>
+            <p className="schedule-title" style={{ color: theme.colors.primary }}>Días disponibles:</p>
+            <p className="schedule-days" style={{ color: theme.colors.text }}>
+              {route.days ? route.days.join(', ') : 'No especificados'}
+            </p>
+          </div>
+
+          {route.stops && route.stops.length > 0 && (
+            <div className="route-stops">
+              <h4 className="stops-title" style={{ color: theme.colors.primary }}>Paradas</h4>
+              
+              {route.stops.map((stop, index) => (
+                <div key={index} className="stop-item" style={{ 
+                  backgroundColor: index % 2 === 0 ? `${theme.colors.primary}10` : 'transparent' 
+                }}>
+                  <span className="stop-name" style={{ color: theme.colors.text }}>{stop.name}</span>
+                  <span className="stop-time" style={{ color: theme.colors.secondaryText }}>{stop.time}</span>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
+          
+          <div className="route-actions">
+            <button 
+              className="join-button" 
+              onClick={() => onJoin && onJoin(route.id)}
+              style={{ backgroundColor: theme.colors.primary }}
+              disabled={!isAvailable}
+            >
+              {isAvailable ? 'Unirse a esta ruta' : 'Ruta completa'}
+            </button>
+            <button 
+              className="more-info-button" 
+              onClick={() => onViewMap && onViewMap(route.id)}
+              style={{ color: theme.colors.secondaryText, borderColor: theme.colors.border }}
+            >
+              <span role="img" aria-label="Ver mapa">🗺️</span>
+            </button>
+          </div>
         </div>
-      )}
-      
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <button 
-          onClick={() => onViewMap && onViewMap(route.id)}
-          style={{
-            backgroundColor: theme.colors.info,
-            color: 'white',
-            border: 'none',
-            padding: '8px 15px',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Ver en mapa
-        </button>
       </div>
     </div>
   );
@@ -126,225 +103,201 @@ export const RouteCard = ({ route, onJoin, onViewMap }) => {
 // Componente para crear una nueva ruta
 export const CreateRouteForm = ({ onSubmit, onCancel }) => {
   const { theme } = useTheme();
+  const [formData, setFormData] = useState({
+    origin: '',
+    destination: 'Campus Universidad',
+    time: '',
+    days: [],
+    capacity: 4
+  });
+  
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+  
+  const handleDayToggle = (day) => {
+    const updatedDays = formData.days.includes(day)
+      ? formData.days.filter(d => d !== day)
+      : [...formData.days, day];
+    
+    setFormData({
+      ...formData,
+      days: updatedDays
+    });
+  };
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (onSubmit) {
+      onSubmit(formData);
+    }
+  };
   
   return (
-    <div style={{
-      backgroundColor: theme.colors.card,
-      borderRadius: '8px',
-      padding: '20px',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-      marginBottom: '20px'
-    }}>
-      <h3 style={{ color: theme.colors.primary, marginBottom: '20px' }}>Crear Nueva Ruta</h3>
+    <div className="create-route-form">
+      <h3 style={{ 
+        color: theme.colors.primary, 
+        marginBottom: '25px',
+        fontSize: '1.2rem',
+        fontWeight: '600',
+        letterSpacing: '-0.3px',
+        position: 'relative',
+        paddingBottom: '10px'
+      }}>
+        <span style={{ 
+          position: 'relative',
+          zIndex: 1
+        }}>Crear Nueva Ruta</span>
+        <span style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          width: '40px',
+          height: '3px',
+          backgroundColor: theme.colors.primary,
+          borderRadius: '2px'
+        }}></span>
+      </h3>
       
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '5px',
-          fontWeight: 'bold',
-          color: theme.colors.text
-        }}>
+      <div className="form-group">
+        <label className="input-label">
           Origen
         </label>
         <input 
           type="text" 
+          name="origin"
+          value={formData.origin}
+          onChange={handleChange}
           placeholder="¿Desde dónde sales?"
-          style={{
-            width: '100%',
-            padding: '10px',
-            borderRadius: '4px',
-            border: `1px solid ${theme.colors.border}`,
-            backgroundColor: theme.colors.background,
-            color: theme.colors.text
-          }}
+          className="custom-input"
         />
+        <div className="help-text">Ingresa la dirección desde donde saldrás</div>
       </div>
       
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '5px',
-          fontWeight: 'bold',
-          color: theme.colors.text
-        }}>
+      <div className="form-group">
+        <label className="input-label">
           Destino
         </label>
         <input 
           type="text" 
-          value="Campus Universidad"
+          name="destination"
+          value={formData.destination}
           disabled
-          style={{
-            width: '100%',
-            padding: '10px',
-            borderRadius: '4px',
-            border: `1px solid ${theme.colors.border}`,
-            backgroundColor: theme.colors.background,
-            color: theme.colors.text,
-            opacity: 0.7
-          }}
+          className="custom-input"
+          style={{ opacity: 0.7 }}
         />
+        <div className="help-text">El destino está configurado por defecto</div>
       </div>
       
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '5px',
-          fontWeight: 'bold',
-          color: theme.colors.text
-        }}>
+      <div className="form-group">
+        <label className="input-label">
           Horario de salida
         </label>
         <input 
           type="time" 
-          style={{
-            width: '100%',
-            padding: '10px',
-            borderRadius: '4px',
-            border: `1px solid ${theme.colors.border}`,
-            backgroundColor: theme.colors.background,
-            color: theme.colors.text
-          }}
+          name="time"
+          value={formData.time}
+          onChange={handleChange}
+          className="custom-input"
         />
+        <div className="help-text">Selecciona la hora de salida</div>
       </div>
       
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '5px',
-          fontWeight: 'bold',
-          color: theme.colors.text
-        }}>
-          Días
+      <div className="form-group">
+        <label className="input-label">
+          Días disponibles
         </label>
-        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'].map((day, index) => (
-            <label key={index} style={{ 
-              display: 'flex', 
-              alignItems: 'center',
-              marginRight: '15px',
-              marginBottom: '10px',
-              cursor: 'pointer'
-            }}>
-              <input 
-                type="checkbox" 
-                style={{ marginRight: '5px' }}
-              />
+        <div style={{ 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          gap: '10px', 
+          marginTop: '10px', 
+          marginBottom: '5px' 
+        }}>
+          {['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'].map((day) => (
+            <button
+              key={day}
+              type="button"
+              onClick={() => handleDayToggle(day)}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '18px',
+                border: `1px solid ${formData.days.includes(day) ? 'transparent' : 'rgba(255, 255, 255, 0.15)'}`,
+                background: formData.days.includes(day) 
+                  ? `linear-gradient(135deg, ${theme.colors.primary}, ${theme.colors.primaryLight})` 
+                  : 'rgba(255, 255, 255, 0.05)',
+                color: formData.days.includes(day) ? 'white' : theme.colors.text,
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: formData.days.includes(day) 
+                  ? '0 4px 10px rgba(139, 30, 65, 0.3)'
+                  : 'none',
+                fontWeight: formData.days.includes(day) ? '600' : '400',
+              }}
+            >
               {day}
-            </label>
+            </button>
           ))}
         </div>
+        <div className="help-text">Selecciona los días en que ofrecerás este viaje</div>
       </div>
       
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '5px',
-          fontWeight: 'bold',
-          color: theme.colors.text
-        }}>
-          Capacidad de pasajeros
+      <div className="form-group">
+        <label className="input-label">
+          Capacidad de asientos
         </label>
-        <select style={{
-          width: '100%',
-          padding: '10px',
-          borderRadius: '4px',
-          border: `1px solid ${theme.colors.border}`,
-          backgroundColor: theme.colors.background,
-          color: theme.colors.text
-        }}>
-          {[1, 2, 3, 4, 5].map(num => (
-            <option key={num} value={num}>{num} pasajero{num > 1 ? 's' : ''}</option>
+        <select 
+          name="capacity" 
+          value={formData.capacity}
+          onChange={handleChange}
+          className="custom-select"
+        >
+          {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
+            <option key={num} value={num}>{num} {num === 1 ? 'asiento' : 'asientos'}</option>
           ))}
         </select>
+        <div className="help-text">Número de asientos disponibles en tu vehículo</div>
       </div>
       
-      <div style={{ marginBottom: '20px' }}>
-        <label style={{ 
-          display: 'block', 
-          marginBottom: '5px',
-          fontWeight: 'bold',
-          color: theme.colors.text
-        }}>
-          Paradas (opcional)
-        </label>
-        <div style={{
-          border: `1px solid ${theme.colors.border}`,
-          borderRadius: '4px',
-          padding: '10px'
-        }}>
-          <div style={{ display: 'flex', marginBottom: '10px' }}>
-            <input 
-              type="text" 
-              placeholder="Nombre de la parada"
-              style={{
-                flex: 3,
-                padding: '10px',
-                borderRadius: '4px',
-                border: `1px solid ${theme.colors.border}`,
-                backgroundColor: theme.colors.background,
-                color: theme.colors.text,
-                marginRight: '10px'
-              }}
-            />
-            <input 
-              type="time" 
-              style={{
-                flex: 1,
-                padding: '10px',
-                borderRadius: '4px',
-                border: `1px solid ${theme.colors.border}`,
-                backgroundColor: theme.colors.background,
-                color: theme.colors.text
-              }}
-            />
-          </div>
-          <button style={{
-            backgroundColor: theme.colors.info,
-            color: 'white',
-            border: 'none',
-            padding: '8px 15px',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            width: '100%'
-          }}>
-            + Añadir otra parada
-          </button>
-        </div>
-      </div>
-      
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between',
+        marginTop: '30px',
+        gap: '15px'
+      }}>
         <button 
           onClick={onCancel}
-          style={{
-            backgroundColor: theme.colors.secondary,
-            color: 'white',
-            border: 'none',
-            padding: '10px 20px',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
+          className="button-secondary"
         >
+          <span role="img" aria-label="cancelar" style={{ marginRight: '5px' }}>✖️</span>
           Cancelar
         </button>
         <button 
-          onClick={onSubmit}
-          style={{
-            backgroundColor: theme.colors.primary,
-            color: 'white',
-            border: 'none',
-            padding: '10px 20px',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
+          onClick={handleSubmit}
+          className="join-button"
+          style={{ padding: '12px 25px' }}
         >
-          Crear Ruta
+          <span role="img" aria-label="crear" style={{ marginRight: '5px' }}>✅</span>
+          Crear ruta
         </button>
+      </div>
+      
+      <div className="tooltip" style={{ position: 'absolute', right: '20px', bottom: '20px' }}>
+        <span style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.5)' }}>?</span>
+        <span className="tooltip-text">
+          Al crear una ruta, estás ofreciendo llevar a otros estudiantes a la universidad.
+          Recuerda ser puntual y respetar las normas de tránsito.
+        </span>
       </div>
     </div>
   );
 };
 
-// Componente para mostrar mapa de rutas
+// Componente para mostrar las rutas en un mapa
 export const RoutesMap = ({ routes }) => {
   const { theme } = useTheme();
   
@@ -354,101 +307,22 @@ export const RoutesMap = ({ routes }) => {
       borderRadius: '8px',
       padding: '20px',
       boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-      marginBottom: '20px'
     }}>
-      <h3 style={{ color: theme.colors.primary, marginBottom: '20px' }}>Mapa de Rutas</h3>
+      <h3 style={{ color: theme.colors.primary, marginBottom: '20px' }}>
+        Mapa de rutas
+      </h3>
       
       <div style={{
-        backgroundColor: theme.colors.card,
-        borderRadius: '8px',
-        padding: '10px',
-        marginBottom: '20px',
-        display: 'flex',
-        alignItems: 'center'
-      }}>
-        <input 
-          type="text"
-          placeholder="Buscar por ubicación o nombre de ruta"
-          style={{
-            flex: 1,
-            padding: '10px 15px',
-            borderRadius: '4px',
-            border: `1px solid ${theme.colors.border}`,
-            backgroundColor: theme.colors.background,
-            color: theme.colors.text
-          }}
-        />
-        <button style={{
-          backgroundColor: theme.colors.primary,
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          padding: '10px 15px',
-          marginLeft: '10px',
-          cursor: 'pointer'
-        }}>
-          Buscar
-        </button>
-      </div>
-      
-      <div style={{
-        backgroundColor: isDarkMode => isDarkMode ? '#303030' : '#E9E9E9', // Color del mapa base según el modo
-        height: '500px',
+        height: '400px',
+        backgroundColor: '#f0f0f0',
         borderRadius: '8px',
         display: 'flex',
-        justifyContent: 'center',
         alignItems: 'center',
-        position: 'relative'
+        justifyContent: 'center',
       }}>
-        <div style={{
-          position: 'absolute',
-          top: '10px',
-          right: '10px',
-          backgroundColor: theme.colors.card,
-          padding: '15px',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-          zIndex: 10
-        }}>
-          <div style={{ fontWeight: 'bold', marginBottom: '8px', color: theme.colors.text }}>Leyenda</div>
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
-            <div style={{ 
-              width: '12px', 
-              height: '12px', 
-              borderRadius: '50%', 
-              backgroundColor: theme.colors.primary, 
-              marginRight: '8px' 
-            }}></div>
-            <span style={{ fontSize: '0.9rem', color: theme.colors.text }}>Punto de origen</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
-            <div style={{ 
-              width: '12px', 
-              height: '12px', 
-              borderRadius: '50%', 
-              backgroundColor: theme.colors.info, 
-              marginRight: '8px' 
-            }}></div>
-            <span style={{ fontSize: '0.9rem', color: theme.colors.text }}>Parada</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ 
-              width: '12px', 
-              height: '12px', 
-              borderRadius: '50%', 
-              backgroundColor: theme.colors.success, 
-              marginRight: '8px' 
-            }}></div>
-            <span style={{ fontSize: '0.9rem', color: theme.colors.text }}>Destino (Universidad)</span>
-          </div>
-        </div>
-        
-        {/* Aquí iría el componente del mapa real (Google Maps o MapBox) */}
-        <div style={{ textAlign: 'center', color: theme.colors.textLight }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '15px' }}>🗺️</div>
-          <div style={{ fontSize: '1.2rem', marginBottom: '10px' }}>Mapa de Rutas Disponibles</div>
-          <div style={{ fontSize: '0.9rem' }}>Implementación con Google Maps o Mapbox</div>
-        </div>
+        <p style={{ color: theme.colors.secondaryText }}>
+          Visualización de mapa próximamente
+        </p>
       </div>
     </div>
   );
@@ -464,142 +338,100 @@ export const MyRoutesAsDriver = ({ routes, onEdit, onCancel }) => {
       borderRadius: '8px',
       padding: '20px',
       boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-      marginBottom: '20px'
     }}>
-      <h3 style={{ color: theme.colors.primary, marginBottom: '20px' }}>Mis Rutas como Conductor</h3>
+      <h3 style={{ color: theme.colors.primary, marginBottom: '20px' }}>
+        Mis rutas como conductor
+      </h3>
       
-      {routes.map((route, index) => (
-        <div key={index} style={{
-          backgroundColor: `${theme.colors.background}`,
-          borderRadius: '8px',
-          padding: '20px',
-          marginBottom: '20px',
-          border: `1px solid ${theme.colors.border}`
-        }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginBottom: '15px'
-          }}>
-            <h4 style={{ color: theme.colors.primary, margin: 0 }}>
-              {route.origin} → {route.destination}
-            </h4>
-            <span style={{ 
-              backgroundColor: route.active ? theme.colors.success : theme.colors.secondary,
-              color: 'white',
-              padding: '5px 10px',
-              borderRadius: '4px',
-              fontSize: '0.8rem'
+      {routes && routes.length > 0 ? (
+        <div>
+          {routes.map((route, index) => (
+            <div key={index} style={{
+              padding: '15px',
+              borderBottom: `1px solid ${theme.colors.border}`,
+              marginBottom: '10px',
             }}>
-              {route.active ? 'Activo' : 'Inactivo'}
-            </span>
-          </div>
-          
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginBottom: '15px'
-          }}>
-            <div>
-              <span style={{ fontWeight: 'bold', marginRight: '5px' }}>Horario:</span>
-              <span>{route.time}</span>
-            </div>
-            <div>
-              <span style={{ fontWeight: 'bold', marginRight: '5px' }}>Días:</span>
-              <span>{route.days.join(', ')}</span>
-            </div>
-            <div>
-              <span style={{ fontWeight: 'bold', marginRight: '5px' }}>Asientos:</span>
-              <span>{route.occupiedSeats}/{route.capacity}</span>
-            </div>
-          </div>
-          
-          {/* Sección de pasajeros */}
-          {route.passengers && route.passengers.length > 0 && (
-            <>
-              <h4 style={{ 
-                color: theme.colors.primary, 
-                borderBottom: `1px solid ${theme.colors.border}`,
-                paddingBottom: '5px',
+              <div style={{ 
+                display: 'flex',
+                justifyContent: 'space-between',
                 marginBottom: '10px'
-              }}>Pasajeros</h4>
-              
-              <div style={{ marginBottom: '15px' }}>
-                {route.passengers.map((passenger, idx) => (
-                  <div key={idx} style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginBottom: '10px',
-                    backgroundColor: `${theme.colors.primary}10`,
-                    padding: '10px',
-                    borderRadius: '8px'
-                  }}>
-                    <div style={{ 
-                      width: '30px', 
-                      height: '30px', 
-                      borderRadius: '50%', 
-                      backgroundColor: theme.colors.primary,
-                      color: 'white',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginRight: '10px',
-                      fontWeight: 'bold'
-                    }}>
-                      {passenger.name.charAt(0)}
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 'bold' }}>{passenger.name}</div>
-                      <div style={{ fontSize: '0.8rem', color: theme.colors.textLight }}>
-                        Se une en: {passenger.joinLocation}
-                      </div>
-                    </div>
-                    <button style={{
-                      backgroundColor: 'transparent',
-                      border: 'none',
-                      color: theme.colors.notification,
-                      cursor: 'pointer'
-                    }}>
-                      Eliminar
-                    </button>
-                  </div>
-                ))}
+              }}>
+                <h4 style={{ color: theme.colors.text, margin: 0 }}>
+                  {route.origin} → {route.destination}
+                </h4>
+                <span style={{
+                  padding: '4px 8px',
+                  backgroundColor: theme.colors.success + '30',
+                  color: theme.colors.success,
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                }}>
+                  Activa
+                </span>
               </div>
-            </>
-          )}
-          
-          {/* La sección de solicitudes pendientes se maneja en la app móvil */}
-          
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-            <button 
-              onClick={() => onEdit && onEdit(route.id)}
-              style={{
-                backgroundColor: theme.colors.info,
-                color: 'white',
-                border: 'none',
-                padding: '8px 15px',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              Editar ruta
-            </button>
-            <button 
-              onClick={() => onCancel && onCancel(route.id)}
-              style={{
-                backgroundColor: theme.colors.notification,
-                color: 'white',
-                border: 'none',
-                padding: '8px 15px',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              Cancelar ruta
-            </button>
-          </div>
+              
+              <div style={{ 
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginBottom: '5px'
+              }}>
+                <div>
+                  <span style={{ fontWeight: 'bold', marginRight: '5px' }}>Horario:</span>
+                  <span>{route.time}</span>
+                </div>
+                <div>
+                  <span style={{ fontWeight: 'bold', marginRight: '5px' }}>Ocupación:</span>
+                  <span>{route.occupiedSeats}/{route.capacity}</span>
+                </div>
+              </div>
+              
+              <div style={{ marginBottom: '10px' }}>
+                <span style={{ fontWeight: 'bold', marginRight: '5px' }}>Días:</span>
+                <span>{route.days.join(', ')}</span>
+              </div>
+              
+              <div style={{ 
+                display: 'flex', 
+                justifyContent: 'flex-end',
+                gap: '10px'
+              }}>
+                <button 
+                  onClick={() => onEdit && onEdit(route.id)}
+                  style={{
+                    backgroundColor: theme.colors.warning,
+                    color: 'white',
+                    border: 'none',
+                    padding: '8px 15px',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Editar ruta
+                </button>
+                <button 
+                  onClick={() => onCancel && onCancel(route.id)}
+                  style={{
+                    backgroundColor: theme.colors.error,
+                    color: 'white',
+                    border: 'none',
+                    padding: '8px 15px',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Cancelar ruta
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      ) : (
+        <p style={{ color: theme.colors.secondaryText, textAlign: 'center' }}>
+          No tienes rutas activas como conductor.
+        </p>
+      )}
     </div>
   );
 };
+
+export default { RouteCard, CreateRouteForm, RoutesMap, MyRoutesAsDriver };

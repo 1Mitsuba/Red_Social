@@ -1,33 +1,82 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
+﻿import React, { useState } from 'react';
+import { RouteCard } from '../components/CarpoolingComponents';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
-import Card from '../components/Card';
-import Button from '../components/Button';
-import FormInput from '../components/FormInput';
+import '../styles/Carpooling.css';
+
+// Importamos el CSS personalizado para la vista de carpooling
 
 const CarpoolingScreen = () => {
   const { theme } = useTheme();
   const { user } = useAuth();
-  const [rides, setRides] = useState(mockRides);
-  const [filter, setFilter] = useState('all'); // 'all', 'offered', 'requested'
-  const [newRideForm, setNewRideForm] = useState({
-    origin: '',
-    destination: '',
-    date: '',
-    time: '',
-    seats: '',
-    notes: '',
-    type: 'offered' // 'offered' o 'requested'
-  });
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showMap, setShowMap] = useState(false);
 
-  const handleFilterChange = (newFilter) => {
-    setFilter(newFilter);
+  const routes = [
+    {
+      id: 1,
+      origin: 'Zona Sur',
+      destination: 'Campus Universidad',
+      driver: 'María López',
+      time: '07:30',
+      days: ['Lunes', 'Miércoles', 'Viernes'],
+      occupiedSeats: 2,
+      capacity: 4,
+      stops: [
+        { name: 'Plaza San Miguel', time: '07:15' },
+        { name: 'Avenida Las Américas', time: '07:25' }
+      ]
+    },
+    {
+      id: 2,
+      origin: 'Zona Norte',
+      destination: 'Campus Universidad',
+      driver: 'Carlos Gutiérrez',
+      time: '08:00',
+      days: ['Lunes', 'Martes', 'Jueves'],
+      occupiedSeats: 3,
+      capacity: 3,
+      stops: [
+        { name: 'Plaza Principal', time: '07:40' },
+        { name: 'Parque Central', time: '07:50' }
+      ]
+    },
+    {
+      id: 3,
+      origin: 'Zona Este',
+      destination: 'Campus Universidad',
+      driver: 'Ana Martínez',
+      time: '07:45',
+      days: ['Martes', 'Jueves', 'Viernes'],
+      occupiedSeats: 1,
+      capacity: 4,
+      stops: [
+        { name: 'Centro Comercial Este', time: '07:30' },
+        { name: 'Terminal de Buses', time: '07:40' }
+      ]
+    }
+  ];
+
+  const handleJoinRoute = (routeId) => {
+    alert(`Te has unido a la ruta ${routeId}. El conductor será notificado.`);
   };
 
-  const filteredRides = filter === 'all' 
-    ? rides 
-    : rides.filter(ride => ride.type === filter);
+  const handleViewMap = (routeId) => {
+    setShowMap(true);
+  };
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredRoutes = searchTerm 
+    ? routes.filter(route => 
+        route.origin.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        route.driver.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        route.days.some(day => day.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    : routes;
 
   const handleSubmitNewRide = () => {
     // Validación básica
@@ -283,77 +332,86 @@ const CarpoolingScreen = () => {
   );
 
   return (
-    <ScrollView 
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
-      contentContainerStyle={styles.contentContainer}
-    >
-      <Text style={[styles.pageTitle, { color: theme.colors.text }]}>
-        Viajes Compartidos
-      </Text>
-
-      {renderNewRideForm()}
-
-      <View style={styles.filterContainer}>
-        <TouchableOpacity 
-          style={[
-            styles.filterButton, 
-            filter === 'all' && [styles.activeFilter, { backgroundColor: theme.colors.primary + '20' }]
-          ]}
-          onPress={() => handleFilterChange('all')}
-        >
-          <Text 
-            style={[
-              styles.filterText, 
-              { color: filter === 'all' ? theme.colors.primary : theme.colors.text }
-            ]}
-          >
-            Todos
-          </Text>
-        </TouchableOpacity>
+    <div className="carpooling-container" style={{ backgroundColor: theme.colors.background }}>
+      <div className="carpooling-header">
+        <h1 className="carpooling-title" style={{ color: theme.colors.text }}>Carpooling Universitario</h1>
+        <p className="carpooling-subtitle">Viaja con compañeros de la universidad y ahorra tiempo y recursos</p>
         
-        <TouchableOpacity 
-          style={[
-            styles.filterButton, 
-            filter === 'offered' && [styles.activeFilter, { backgroundColor: theme.colors.primary + '20' }]
-          ]}
-          onPress={() => handleFilterChange('offered')}
-        >
-          <Text 
-            style={[
-              styles.filterText, 
-              { color: filter === 'offered' ? theme.colors.primary : theme.colors.text }
-            ]}
+        <div className="carpooling-search">
+          <input
+            type="text"
+            placeholder="Buscar por origen, conductor o día..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="carpooling-search-input"
+          />
+          <button 
+            className="carpooling-button create-route-button"
+            onClick={() => setShowCreateForm(!showCreateForm)}
+            style={{ backgroundColor: theme.colors.primary }}
           >
-            Ofrecidos
-          </Text>
-        </TouchableOpacity>
+            {showCreateForm ? 'Cancelar' : '+ Crear nueva ruta'}
+          </button>
+        </div>
         
-        <TouchableOpacity 
-          style={[
-            styles.filterButton, 
-            filter === 'requested' && [styles.activeFilter, { backgroundColor: theme.colors.primary + '20' }]
-          ]}
-          onPress={() => handleFilterChange('requested')}
-        >
-          <Text 
-            style={[
-              styles.filterText, 
-              { color: filter === 'requested' ? theme.colors.primary : theme.colors.text }
-            ]}
+        <div className="carpooling-view-options">
+          <button 
+            className={`view-option ${!showMap ? 'active' : ''}`} 
+            onClick={() => setShowMap(false)}
+            style={{ 
+              backgroundColor: !showMap ? theme.colors.primaryLight : 'transparent',
+              color: !showMap ? theme.colors.white : theme.colors.text
+            }}
           >
-            Solicitados
-          </Text>
-        </TouchableOpacity>
-      </View>
+            Ver como Lista
+          </button>
+          <button 
+            className={`view-option ${showMap ? 'active' : ''}`}
+            onClick={() => setShowMap(true)}
+            style={{ 
+              backgroundColor: showMap ? theme.colors.primaryLight : 'transparent',
+              color: showMap ? theme.colors.white : theme.colors.text
+            }}
+          >
+            Ver en Mapa
+          </button>
+        </div>
+      </div>
+      
+      {showCreateForm && (
+        <div className="create-route-form" style={{ borderColor: theme.colors.border }}>
+          <h2 style={{ color: theme.colors.text }}>Crear nueva ruta</h2>
+          {/* El formulario se implementará posteriormente */}
+          <p>Formulario de creación de rutas (próximamente)</p>
+        </div>
+      )}
 
-      <FlatList
-        data={filteredRides}
-        renderItem={renderRideItem}
-        keyExtractor={item => item.id}
-        scrollEnabled={false}
-        style={styles.ridesList}
-      />
-    </ScrollView>
+      {!showMap ? (
+        <div className="routes-container">
+          {filteredRoutes.length > 0 ? (
+            filteredRoutes.map(route => (
+              <RouteCard 
+                key={route.id} 
+                route={route} 
+                onJoin={() => handleJoinRoute(route.id)}
+                onViewMap={() => handleViewMap(route.id)}
+              />
+            ))
+          ) : (
+            <div className="no-results">
+              <p>No se encontraron rutas con los criterios especificados.</p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="map-container">
+          {/* Implementación del mapa en el futuro */}
+          <div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f2f2f2', borderRadius: '8px' }}>
+            <p>Visualización de mapa (próximamente)</p>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

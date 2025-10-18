@@ -1,0 +1,89 @@
+/* Estilos de la barra lateral - Solo iconos - Versión con clases correctas */
+.sidebar {
+  width: 80px !important;
+  background-color: #1a1a1a !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  padding: 20px 0 !important;
+}
+
+.sidebar-logo {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 50% !important;
+  color: #fff !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  font-size: 20px !important;
+  font-weight: bold !important;
+  margin-bottom: 30px !important;
+}
+
+.sidebar-nav {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 25px !important;
+  flex-grow: 1 !important;
+  width: 100% !important;
+}
+
+.nav-icon {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  font-size: 20px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+}
+
+.sidebar-icon:hover, .sidebar-icon.active {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+}
+
+/* Estilo para el tooltip */
+.nav-tooltip {
+  position: absolute !important;
+  left: 50px !important;
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  color: white !important;
+  padding: 5px 10px !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  white-space: nowrap !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: all 0.3s ease !important;
+  z-index: 200 !important;
+}
+
+.nav-icon:hover .nav-tooltip {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.sidebar-footer {
+  margin-top: auto !important;
+  margin-bottom: 20px !important;
+}
+
+.profile-img {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+  object-fit: cover !important;
+}
+
+/* Ajustar margen para el contenido principal */
+.main-content {
+  margin-left: 80px !important;
+}

@@ -54,9 +54,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start:webpack": "webpack serve --mode development",
     "build": "react-scripts build",
-    "build:webpack": "webpack --mode production",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\""
   },

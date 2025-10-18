@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
-import { apiService } from '../services/api';
 import Card from '../components/Card';
 import Button from '../components/Button';
 
@@ -28,7 +26,7 @@ const AcademicScheduleScreen = () => {
         setSchedule(mockSchedule);
       } catch (err) {
         console.error('Error al cargar el horario:', err);
-        setError('No se pudo cargar el horario. Inténtalo de nuevo más tarde.');
+        setError('No se pudo cargar el horario académico');
       } finally {
         setLoading(false);
       }
@@ -37,222 +35,121 @@ const AcademicScheduleScreen = () => {
     fetchSchedule();
   }, []);
 
-  // Función para generar datos simulados de horario
+  // Función para generar datos de ejemplo
   const generateMockSchedule = () => {
     const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
-    const timeSlots = ['07:00 - 08:30', '08:30 - 10:00', '10:30 - 12:00', '12:00 - 13:30', '14:30 - 16:00', '16:00 - 17:30'];
+    const timeSlots = ['08:00 - 09:30', '10:00 - 11:30', '12:00 - 13:30', '14:30 - 16:00', '16:30 - 18:00'];
+    
     const subjects = [
-      'Programación Web',
-      'Bases de Datos',
-      'Algoritmos',
-      'Inteligencia Artificial',
-      'Redes de Computadores',
-      'Sistemas Operativos',
-      'Matemáticas Discretas',
-      null, // Representando horario libre
-      null
+      { id: 1, name: 'Bases de Datos II', code: 'BD202', instructor: 'Dr. González', classroom: 'Lab 1' },
+      { id: 2, name: 'Programación Avanzada', code: 'PA301', instructor: 'Ing. Rodríguez', classroom: 'Aula 305' },
+      { id: 3, name: 'Sistemas Operativos', code: 'SO401', instructor: 'Dra. Martínez', classroom: 'Lab 3' },
+      { id: 4, name: 'Inteligencia Artificial', code: 'IA501', instructor: 'Dr. Pérez', classroom: 'Aula 201' },
+      { id: 5, name: 'Redes de Computadoras', code: 'RC302', instructor: 'Ing. López', classroom: 'Lab 2' }
     ];
     
-    const schedule = {};
-    days.forEach(day => {
-      schedule[day] = {};
-      timeSlots.forEach(timeSlot => {
-        // Asignar aleatoriamente materias a los horarios o dejar algunos vacíos
-        const randomIndex = Math.floor(Math.random() * subjects.length);
-        schedule[day][timeSlot] = subjects[randomIndex];
-      });
+    // Crear horario para cada día
+    return days.map(day => {
+      // Seleccionar de 3 a 5 materias aleatorias para este día
+      const numberOfSubjects = Math.floor(Math.random() * 3) + 3;
+      const shuffledSubjects = [...subjects].sort(() => 0.5 - Math.random());
+      const daySubjects = shuffledSubjects.slice(0, numberOfSubjects);
+      
+      // Asignar horarios aleatorios
+      const classSchedule = daySubjects.map((subject, index) => ({
+        ...subject,
+        timeSlot: timeSlots[index]
+      }));
+      
+      return {
+        day,
+        classes: classSchedule.sort((a, b) => timeSlots.indexOf(a.timeSlot) - timeSlots.indexOf(b.timeSlot))
+      };
     });
-    
-    return { days, timeSlots, schedule };
-  };
-
-  const renderScheduleTable = () => {
-    if (!schedule) return null;
-
-    return (
-      <View style={styles.tableContainer}>
-        {/* Encabezado con días */}
-        <View style={styles.headerRow}>
-          <View style={styles.timeCell}>
-            <Text style={[styles.headerText, { color: theme.colors.secondary }]}>Hora</Text>
-          </View>
-          {schedule.days.map(day => (
-            <View key={day} style={styles.dayCell}>
-              <Text style={[styles.headerText, { color: theme.colors.text }]}>{day}</Text>
-            </View>
-          ))}
-        </View>
-        
-        {/* Filas con horarios */}
-        {schedule.timeSlots.map(timeSlot => (
-          <View key={timeSlot} style={styles.timeRow}>
-            <View style={styles.timeCell}>
-              <Text style={[styles.timeText, { color: theme.colors.text }]}>{timeSlot}</Text>
-            </View>
-            {schedule.days.map(day => {
-              const subject = schedule.schedule[day][timeSlot];
-              return (
-                <View 
-                  key={`${day}-${timeSlot}`} 
-                  style={[
-                    styles.subjectCell, 
-                    { 
-                      backgroundColor: subject ? theme.colors.primary + '20' : theme.colors.card,
-                      borderColor: theme.colors.border
-                    }
-                  ]}
-                >
-                  {subject ? (
-                    <Text style={[styles.subjectText, { color: theme.colors.text }]}>{subject}</Text>
-                  ) : (
-                    <Text style={[styles.emptyText, { color: theme.colors.secondary }]}>Libre</Text>
-                  )}
-                </View>
-              );
-            })}
-          </View>
-        ))}
-      </View>
-    );
   };
 
   return (
-    <ScrollView 
-      style={[styles.container, { backgroundColor: theme.colors.background }]} 
-      contentContainerStyle={styles.contentContainer}
-      horizontal={false}
-    >
-      <Text style={[styles.pageTitle, { color: theme.colors.text }]}>
-        Horario Académico
-      </Text>
-
-      <Card
-        title="Horario Semanal"
-        subtitle={`Periodo Actual: 2025-II`}
-        style={styles.scheduleCard}
-        contentStyle={styles.scheduleCardContent}
-      >
-        {loading ? (
-          <Text style={{ color: theme.colors.secondary }}>Cargando horario...</Text>
-        ) : error ? (
-          <View>
-            <Text style={{ color: theme.colors.error }}>{error}</Text>
-            <Button 
-              title="Reintentar" 
-              onPress={() => {/* Función para reintentar */}} 
-              variant="secondary" 
-              style={styles.retryButton}
-            />
-          </View>
-        ) : (
-          <ScrollView horizontal showsHorizontalScrollIndicator={true}>
-            {renderScheduleTable()}
-          </ScrollView>
-        )}
-      </Card>
-
-      <View style={styles.actionsContainer}>
-        <Button
-          title="Exportar a PDF"
-          onPress={() => {/* Función para exportar a PDF */}}
-          variant="outline"
-          style={styles.actionButton}
-        />
-        <Button
-          title="Exportar a Excel"
-          onPress={() => {/* Función para exportar a Excel */}}
-          variant="outline"
-          style={styles.actionButton}
-        />
-      </View>
-    </ScrollView>
+    <div style={{ padding: '15px' }}>
+      <h2 style={{ color: theme.colors.text, marginBottom: '20px' }}>Horario Académico</h2>
+      
+      {loading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '30px' }}>
+          <div>Cargando horario...</div>
+        </div>
+      ) : error ? (
+        <div style={{ padding: '20px', backgroundColor: theme.colors.error, color: 'white', borderRadius: '8px' }}>
+          {error}
+          <button 
+            style={{ marginLeft: '10px', padding: '5px 10px' }} 
+            onClick={() => generateMockSchedule()}
+          >
+            Reintentar
+          </button>
+        </div>
+      ) : (
+        <div>
+          {schedule && schedule.map((daySchedule, index) => (
+            <div 
+              key={index} 
+              style={{ 
+                marginBottom: '20px',
+                backgroundColor: theme.colors.card,
+                borderRadius: '8px',
+                overflow: 'hidden'
+              }}
+            >
+              <div style={{ 
+                backgroundColor: theme.colors.primary,
+                padding: '10px 15px',
+                color: 'white',
+                fontWeight: 'bold'
+              }}>
+                {daySchedule.day}
+              </div>
+              
+              {daySchedule.classes.length === 0 ? (
+                <div style={{ padding: '15px', textAlign: 'center' }}>
+                  No hay clases programadas
+                </div>
+              ) : (
+                <div>
+                  {daySchedule.classes.map((classInfo, classIndex) => (
+                    <div 
+                      key={classIndex}
+                      style={{ 
+                        padding: '12px 15px',
+                        borderBottom: classIndex < daySchedule.classes.length - 1 ? `1px solid ${theme.colors.border}` : 'none',
+                        display: 'flex',
+                        justifyContent: 'space-between'
+                      }}
+                    >
+                      <div>
+                        <div style={{ fontWeight: 'bold', color: theme.colors.text }}>
+                          {classInfo.name}
+                        </div>
+                        <div style={{ color: theme.colors.textLight, fontSize: '0.9rem' }}>
+                          {classInfo.code} | {classInfo.instructor} | {classInfo.classroom}
+                        </div>
+                      </div>
+                      <div style={{ 
+                        backgroundColor: theme.colors.background,
+                        padding: '5px 10px',
+                        borderRadius: '4px',
+                        fontSize: '0.9rem',
+                        alignSelf: 'center'
+                      }}>
+                        {classInfo.timeSlot}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  contentContainer: {
-    padding: 16,
-  },
-  pageTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 24,
-  },
-  scheduleCard: {
-    marginBottom: 24,
-  },
-  scheduleCardContent: {
-    padding: 0,
-  },
-  tableContainer: {
-    minWidth: '100%',
-  },
-  headerRow: {
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-  },
-  timeRow: {
-    flexDirection: 'row',
-  },
-  timeCell: {
-    width: 100,
-    padding: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRightWidth: 1,
-    borderRightColor: '#E5E7EB',
-  },
-  dayCell: {
-    width: 140,
-    padding: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRightWidth: 1,
-    borderRightColor: '#E5E7EB',
-  },
-  subjectCell: {
-    width: 140,
-    padding: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRightWidth: 1,
-    borderRightColor: '#E5E7EB',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-    minHeight: 80,
-  },
-  headerText: {
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  timeText: {
-    fontSize: 14,
-  },
-  subjectText: {
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  emptyText: {
-    fontSize: 14,
-    fontStyle: 'italic',
-    opacity: 0.6,
-  },
-  actionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 16,
-  },
-  actionButton: {
-    marginHorizontal: 8,
-  },
-  retryButton: {
-    marginTop: 16,
-    alignSelf: 'center',
-  }
-});
 
 export default AcademicScheduleScreen;

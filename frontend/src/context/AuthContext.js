@@ -20,26 +20,56 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('Iniciando sesión con:', userData);
       // Simulamos un usuario autenticado
-      setUser(userData || { 
-        id: 'user-123', 
-        nombre: 'Usuario de Prueba',
-        email: 'usuario@ejemplo.com',
-        rol: 'estudiante'
-      });
+      setUser(userData);
       
       // Guardamos en localStorage para persistencia entre recargas
-      localStorage.setItem('user-data', JSON.stringify(userData || { 
-        id: 'user-123', 
-        nombre: 'Usuario de Prueba',
-        email: 'usuario@ejemplo.com',
-        rol: 'estudiante'
-      }));
+      localStorage.setItem('user-data', JSON.stringify(userData));
       
       return { user: userData };
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
       setError('Error al iniciar sesión');
       return { error: 'Error al iniciar sesión' };
+    }
+  };
+
+  // Función para inicio de sesión rápido con usuarios predefinidos
+  const quickLogin = (userType) => {
+    const predefinedUsers = {
+      estudiante: { 
+        id: 'est-123', 
+        nombre: 'María Rodríguez',
+        apellido: 'Rodríguez',
+        correo: 'maria@univalle.edu',
+        ci_est: '12345678',
+        carrera: 'Ingeniería de Sistemas',
+        semestre: 6,
+        rol: 'estudiante'
+      },
+      docente: {
+        id: 'doc-456',
+        nombre: 'Carlos Mendoza',
+        apellido: 'Mendoza',
+        correo: 'carlos.mendoza@univalle.edu',
+        ci_doc: '87654321',
+        especialidad_doc: 'Desarrollo Web',
+        rol: 'docente'
+      },
+      administrador: {
+        id: 'adm-789',
+        nombre: 'Laura Espinoza',
+        apellido: 'Espinoza',
+        correo: 'admin@univalle.edu',
+        rol: 'administrador'
+      }
+    };
+    
+    const selectedUser = predefinedUsers[userType];
+    if (selectedUser) {
+      return login(selectedUser);
+    } else {
+      setError('Tipo de usuario no válido');
+      return { error: 'Tipo de usuario no válido' };
     }
   };
 
@@ -97,6 +127,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     error,
     login,
+    quickLogin,
     logout,
     signIn,
     signUp,

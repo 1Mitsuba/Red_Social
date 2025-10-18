@@ -1,52 +1,74 @@
 import React from 'react';
 import { useTheme } from '../context/ThemeContext';
 
-// Componente para publicaciones sociales
+// Componente para publicaciones sociales - Estilo limpio como la imagen
 export const SocialPost = ({ post, onLike, onComment, onShare }) => {
   const { theme } = useTheme();
   
   return (
     <div style={{
-      backgroundColor: theme.colors.card,
+      backgroundColor: '#FFFFFF',
       borderRadius: '8px',
-      padding: '20px',
-      marginBottom: '20px',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+      padding: '24px',
+      marginBottom: '16px',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+      border: '1px solid #e5e5e5'
     }}>
-      <div style={{ display: 'flex', marginBottom: '15px' }}>
+      {/* Header del post con usuario */}
+      <div style={{ display: 'flex', marginBottom: '16px', alignItems: 'center' }}>
         <div style={{ 
-          width: '50px', 
-          height: '50px', 
+          width: '48px', 
+          height: '48px', 
           borderRadius: '50%', 
           backgroundColor: theme.colors.primary,
           color: 'white',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          marginRight: '15px',
-          fontWeight: 'bold',
-          fontSize: '18px'
+          marginRight: '12px',
+          fontWeight: '600',
+          fontSize: '18px',
+          flexShrink: 0
         }}>
           {post.avatarText || post.user.charAt(0)}
         </div>
         <div>
-          <div style={{ fontWeight: 'bold', color: theme.colors.text }}>{post.user}</div>
-          <div style={{ color: theme.colors.textLight, fontSize: '0.8rem' }}>{post.time}</div>
+          <div style={{ 
+            fontWeight: '700', 
+            color: theme.colors.primary,
+            fontSize: '15px',
+            marginBottom: '2px'
+          }}>
+            {post.user}
+          </div>
+          <div style={{ 
+            color: '#999', 
+            fontSize: '13px' 
+          }}>
+            {post.time}
+          </div>
         </div>
       </div>
       
-      <div style={{ marginBottom: '15px', lineHeight: '1.5' }}>
+      {/* Contenido del post */}
+      <div style={{ 
+        marginBottom: '16px', 
+        lineHeight: '1.6',
+        color: '#333',
+        fontSize: '15px'
+      }}>
         {post.content}
       </div>
       
+      {/* Imagen si existe */}
       {post.image && (
-        <div style={{ marginBottom: '15px' }}>
+        <div style={{ marginBottom: '16px' }}>
           <img 
             src={post.image} 
             alt="Contenido de la publicación" 
             style={{
               width: '100%',
-              borderRadius: '8px',
+              borderRadius: '6px',
               maxHeight: '400px',
               objectFit: 'cover'
             }}
@@ -54,11 +76,12 @@ export const SocialPost = ({ post, onLike, onComment, onShare }) => {
         </div>
       )}
       
+      {/* Botones de interacción */}
       <div style={{ 
         display: 'flex', 
-        justifyContent: 'space-between',
-        borderTop: `1px solid ${theme.colors.border}`,
-        paddingTop: '15px'
+        gap: '24px',
+        paddingTop: '12px',
+        borderTop: '1px solid #f0f0f0'
       }}>
         <button 
           onClick={() => onLike && onLike(post.id)}
@@ -67,13 +90,25 @@ export const SocialPost = ({ post, onLike, onComment, onShare }) => {
             border: 'none',
             display: 'flex',
             alignItems: 'center',
-            color: post.liked ? theme.colors.primary : theme.colors.textLight,
+            color: post.liked ? theme.colors.primary : '#666',
             cursor: 'pointer',
-            fontWeight: post.liked ? 'bold' : 'normal'
+            fontWeight: '500',
+            fontSize: '14px',
+            padding: '6px 12px',
+            borderRadius: '4px',
+            transition: 'background-color 0.2s'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(139, 30, 65, 0.05)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
           }}
         >
-          <span style={{ marginRight: '5px', fontSize: '1.2rem' }}>👍</span>
-          {post.likes} Me gusta
+          <span style={{ marginRight: '6px', fontSize: '16px' }}>
+            {post.liked ? '❤️' : '🤍'}
+          </span>
+          {post.likes}
         </button>
         
         <button 
@@ -83,12 +118,22 @@ export const SocialPost = ({ post, onLike, onComment, onShare }) => {
             border: 'none',
             display: 'flex',
             alignItems: 'center',
-            color: theme.colors.textLight,
-            cursor: 'pointer'
+            color: '#666',
+            cursor: 'pointer',
+            fontWeight: '500',
+            fontSize: '14px',
+            padding: '6px 12px',
+            borderRadius: '4px',
+            transition: 'background-color 0.2s'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
           }}
         >
-          <span style={{ marginRight: '5px', fontSize: '1.2rem' }}>💬</span>
-          {post.comments} Comentarios
+          <span style={{ marginRight: '6px' }}>Comentar</span>
         </button>
         
         <button 
@@ -98,12 +143,22 @@ export const SocialPost = ({ post, onLike, onComment, onShare }) => {
             border: 'none',
             display: 'flex',
             alignItems: 'center',
-            color: theme.colors.textLight,
-            cursor: 'pointer'
+            color: '#666',
+            cursor: 'pointer',
+            fontWeight: '500',
+            fontSize: '14px',
+            padding: '6px 12px',
+            borderRadius: '4px',
+            transition: 'background-color 0.2s'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
           }}
         >
-          <span style={{ marginRight: '5px', fontSize: '1.2rem' }}>↗️</span>
-          Compartir
+          <span style={{ marginRight: '6px' }}>Compartir</span>
         </button>
       </div>
       
@@ -193,76 +248,76 @@ export const SocialPost = ({ post, onLike, onComment, onShare }) => {
   );
 };
 
-// Componente para crear una nueva publicación
+// Componente para crear una nueva publicación - Estilo limpio de la imagen
 export const CreatePostForm = ({ onSubmit }) => {
   const { theme } = useTheme();
   
   return (
     <div style={{
-      backgroundColor: theme.colors.card,
-      padding: '20px',
+      backgroundColor: '#FFFFFF',
+      padding: '24px',
       borderRadius: '8px',
-      marginBottom: '20px',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+      marginBottom: '16px',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+      border: '1px solid #e5e5e5'
     }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '15px' }}>
-        <div style={{ 
-          width: '50px', 
-          height: '50px', 
-          borderRadius: '50%', 
-          backgroundColor: theme.colors.primary,
-          color: 'white',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginRight: '15px',
-          fontWeight: 'bold'
-        }}>
-          YO
-        </div>
-        <textarea 
-          placeholder="¿Qué estás pensando?"
-          style={{
-            flex: 1,
-            minHeight: '100px',
-            padding: '15px',
-            borderRadius: '8px',
-            border: `1px solid ${theme.colors.border}`,
-            backgroundColor: theme.colors.background,
-            color: theme.colors.text,
-            resize: 'none',
-            fontFamily: 'inherit',
-            fontSize: '1rem'
-          }}
-        />
-      </div>
+      <textarea 
+        placeholder="¿Qué estás pensando?"
+        style={{
+          width: '100%',
+          minHeight: '80px',
+          padding: '16px',
+          borderRadius: '8px',
+          border: '1px solid #e0e0e0',
+          backgroundColor: '#f9f9f9',
+          color: '#333',
+          resize: 'none',
+          fontFamily: 'inherit',
+          fontSize: '15px',
+          lineHeight: '1.6',
+          outline: 'none',
+          transition: 'border-color 0.2s, background-color 0.2s',
+          boxSizing: 'border-box'
+        }}
+        onFocus={(e) => {
+          e.target.style.borderColor = theme.colors.primary;
+          e.target.style.backgroundColor = '#ffffff';
+        }}
+        onBlur={(e) => {
+          e.target.style.borderColor = '#e0e0e0';
+          e.target.style.backgroundColor = '#f9f9f9';
+        }}
+      />
       
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <button style={{
-            backgroundColor: 'transparent',
-            border: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            color: theme.colors.textLight,
-            cursor: 'pointer',
-            padding: '5px 10px'
-          }}>
-            <span style={{ marginRight: '5px', fontSize: '1.2rem' }}>📷</span>
-            Foto
-          </button>
-        </div>
-        
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'flex-end', 
+        alignItems: 'center',
+        marginTop: '16px'
+      }}>
         <button 
           onClick={onSubmit}
           style={{
             backgroundColor: theme.colors.primary,
             color: 'white',
             border: 'none',
-            padding: '10px 20px',
-            borderRadius: '20px',
+            padding: '12px 32px',
+            borderRadius: '6px',
             cursor: 'pointer',
-            fontWeight: 'bold'
+            fontWeight: '600',
+            fontSize: '15px',
+            transition: 'background-color 0.2s, transform 0.1s',
+            boxShadow: '0 2px 4px rgba(139, 30, 65, 0.2)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#6d1829';
+            e.currentTarget.style.transform = 'translateY(-1px)';
+            e.currentTarget.style.boxShadow = '0 4px 8px rgba(139, 30, 65, 0.3)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = theme.colors.primary;
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 2px 4px rgba(139, 30, 65, 0.2)';
           }}
         >
           Publicar
