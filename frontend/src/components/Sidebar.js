@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
+import './SidebarOverride.css';
 
-const Sidebar = ({ onModuleChange }) => {
+const Sidebar = ({ onModuleChange, activeModule: externalActiveModule }) => {
   const { theme } = useTheme();
   const { user } = useAuth();
-  const [activeModule, setActiveModule] = useState('social');
+  // Usar el activeModule pasado como prop, o 'social' si no se proporciona
+  const [activeModule, setActiveModule] = useState(externalActiveModule || 'social');
   
-  // Iconos de navegación para los módulos principales
+  // Iconos de navegación para los módulos principales - solo iconos sin texto
   const navIcons = [
-    { id: 'social', name: 'Social', icon: '💬', tooltip: 'Red Social' },
-    { id: 'academic', name: 'Académico', icon: '📚', tooltip: 'Gestión Académica' },
-    { id: 'carpooling', name: 'Carpooling', icon: '🚗', tooltip: 'Compartir Viajes' },
-    { id: 'messages', name: 'Mensajes', icon: '✉️', tooltip: 'Mensajería' },
-    { id: 'notifications', name: 'Notificaciones', icon: '🔔', tooltip: 'Notificaciones' },
-    { id: 'settings', name: 'Ajustes', icon: '⚙️', tooltip: 'Configuración' },
+    { id: 'social', icon: '💬', tooltip: 'Social' },
+    { id: 'academic', icon: '🎓', tooltip: 'Académico' },
+    { id: 'carpooling', icon: '🚗', tooltip: 'Carpooling' },
+    { id: 'messages', icon: '✉️', tooltip: 'Mensajes' },
+    { id: 'notifications', icon: '🔔', tooltip: 'Notificaciones' },
+    { id: 'settings', icon: '⚙️', tooltip: 'Ajustes' },
   ];
 
   const handleModuleChange = (moduleId) => {
@@ -26,30 +28,28 @@ const Sidebar = ({ onModuleChange }) => {
 
   return (
     <div className="sidebar">
-      <div className="sidebar-logo" style={{ backgroundColor: theme.colors.primary }}>
+      <div className="sidebar-logo" style={{ backgroundColor: 'rgb(139, 30, 65)' }}>
         RSU
       </div>
       <div className="sidebar-nav">
         {navIcons.map((item) => (
           <div 
-            key={item.id}
+            key={item.id} 
             className={`nav-icon ${activeModule === item.id ? 'active' : ''}`}
             onClick={() => handleModuleChange(item.id)}
             title={item.tooltip}
           >
-            <span>{item.icon}</span>
-            <div className="nav-tooltip">{item.name}</div>
+            {item.icon}
+            <div className="nav-tooltip">{item.tooltip}</div>
           </div>
         ))}
       </div>
       <div className="sidebar-footer">
-        <div 
-          className="user-avatar" 
-          style={{ backgroundColor: theme.colors.secondary }}
-          title={user ? user.nombre : 'Usuario'}
-        >
-          {user && user.nombre ? user.nombre.charAt(0).toUpperCase() : 'U'}
-        </div>
+        <img 
+          src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.nombre || 'Usuario'}&background=cf2e68`} 
+          alt={user?.nombre || "Perfil"} 
+          className="profile-img"
+        />
       </div>
     </div>
   );
