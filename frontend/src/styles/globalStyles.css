@@ -8,11 +8,10 @@
 
 body {
   font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
-  background: var(--main-bg, #333333);
-  color: var(--main-text, #ffffff);
+  background: var(--bg-primary, #333333);
+  color: var(--text-primary, #ffffff);
   height: 100vh;
   overflow: hidden;
-  background: linear-gradient(145deg, #383840, #2a2a30);
 }
 
 #root {
@@ -26,10 +25,10 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: #333339;
+  background-color: var(--bg-primary);
   border-radius: 20px;
   padding: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 30px var(--shadow-color, rgba(0,0,0,0.2));
   margin: 20px;
   max-width: 1400px;
   margin-left: auto;
@@ -80,12 +79,12 @@ body {
   font-size: 18px;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary, rgba(255, 255, 255, 0.6));
 }
 
 .sidebar-icon:hover, .sidebar-icon.active {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background-color: var(--hover-bg, rgba(255, 255, 255, 0.1));
+  color: var(--text-primary, #fff);
 }
 
 .sidebar-profile {
@@ -544,11 +543,11 @@ h1, h2, h3, h4, h5 {
 /* Scrollbar moderno */
 ::-webkit-scrollbar {
   width: 8px;
-  background: #e0e0e0;
+  background: var(--card-secondary, #e0e0e0);
   border-radius: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #c0c0c0;
+  background: var(--border-color, #c0c0c0);
   border-radius: 8px;
 }
 

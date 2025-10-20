@@ -3,9 +3,10 @@ import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { Card, Button, Heading } from './UIComponents';
 import '../styles/LoginFormNew.css';
+import '../styles/themes.css';
 
 const LoginForm = () => {
-  const { theme } = useTheme();
+  const { theme, isDarkMode } = useTheme();
   const { login, quickLogin } = useAuth();
   const [activeTab, setActiveTab] = useState('login'); // 'login' o 'signup'
   const [formData, setFormData] = useState({

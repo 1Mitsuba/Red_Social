@@ -9,10 +9,12 @@ import MessagesModule from './components/MessagesModule';
 import NotificationsModule from './components/NotificationsModule';
 import SettingsModule from './components/SettingsModule';
 import LoginForm from './components/LoginForm';
+import ThemeController from './components/ThemeController';
 import websocketConfig from './services/websocketConfig';
 import './styles.css';
 import './styles/globalStyles.css';
 import './styles/app.css';
+import './styles/themes.css';
 
 const App = () => {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -58,6 +60,7 @@ const App = () => {
   return (
     <ThemeProvider>
       <AuthProvider>
+        <ThemeController />
         <AuthContent activeModule={activeModule} setActiveModule={handleModuleChange} />
       </AuthProvider>
     </ThemeProvider>
@@ -93,7 +96,7 @@ const AuthContent = ({ activeModule, setActiveModule }) => {
   if (user) {
     return (
       <div className="app-container">
-        {/* Sidebar con solo iconos, sin texto */}
+        {/* Sidebar con solo iconos y perfil de usuario integrado */}
         <Sidebar onModuleChange={setActiveModule} activeModule={activeModule} />
         <div className="main-content" style={{ marginLeft: "80px" }}>
           {renderActiveModule()}
@@ -104,13 +107,7 @@ const AuthContent = ({ activeModule, setActiveModule }) => {
   
   // Si no hay usuario autenticado, mostrar formulario de login
   return (
-    <div className="login-container" style={{ 
-      display: 'flex', 
-      justifyContent: 'center', 
-      alignItems: 'center', 
-      height: '100vh', 
-      backgroundColor: '#333339' 
-    }}>
+    <div className="login-container">
       <LoginForm />
     </div>
   );

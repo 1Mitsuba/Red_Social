@@ -1,0 +1,486 @@
+/* Estilos para el nuevo módulo de perfil de usuario */
+.user-profile-container-new {
+  width: 500px;
+  height: 670px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px var(--shadow-color, rgba(0, 0, 0, 0.3));
+  z-index: 1000;
+  margin: auto;
+  position: relative;
+  background-color: var(--card-bg, white);
+  color: var(--text-primary, black);
+  animation: profileIn 0.3s ease;
+}
+
+@keyframes profileIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Sección superior */
+.profile-header-new {
+  position: relative;
+  height: 180px; /* Reducimos la altura del header de 200px a 180px */
+  background: var(--header-bg, linear-gradient(135deg, #8B1E41, #AD3F62));
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  border-bottom-left-radius: 50% 25%;
+  border-bottom-right-radius: 50% 25%;
+}
+
+.camera-icon {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  font-size: 20px;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-bar-new {
+  width: 80%;
+  height: 34px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1) inset;
+}
+
+.search-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #E75A7C;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.search-bar-new input {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  width: 100%;
+  outline: none;
+  padding: 8px 0;
+}
+
+.search-bar-new input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.user-avatar-new {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-color: #F06292;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  border: 4px solid white;
+  position: absolute;
+  top: 160px; /* Ajustado para posicionarlo en el borde entre las secciones */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Sección inferior */
+.profile-content-new {
+  flex: 1;
+  background-color: var(--card-bg, #222);
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  padding: 20px 0 70px;
+  color: var(--text-primary, black);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+  margin-bottom: 0;
+}
+
+.more-section {
+  margin: 50px 0 15px 10px;
+}
+
+.more-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Eliminamos los indicadores ya que ahora usamos un estilo diferente para las categorías */
+
+/* Categorías */
+.profile-categories-new {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+}
+
+.category-pill {
+  color: var(--text-secondary, #666);
+  padding: 8px 0; /* Reducido de 12px a 8px */
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  position: relative;
+  opacity: 0.7;
+  width: 25%; /* Distribución equitativa */
+  text-align: center;
+}
+
+.category-pill:hover {
+  opacity: 0.9;
+  color: var(--text-primary, #333);
+}
+
+.category-pill.active {
+  color: var(--primary-color, #F06292);
+  font-weight: 600;
+  opacity: 1;
+}
+
+.category-pill.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--primary-color, #F06292);
+}
+
+/* Estilos para la información del usuario */
+.user-info-section {
+  text-align: center;
+  margin: 15px 0 5px; /* Reducimos los márgenes */
+  padding: 0 15px;
+}
+
+.user-name {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: var(--text-primary, black);
+}
+
+.user-email {
+  font-size: 16px;
+  color: var(--text-primary, black);
+  opacity: 0.8;
+  margin-bottom: 5px;
+}
+
+.user-role {
+  font-size: 15px;
+  color: var(--text-secondary, #666);
+  opacity: 0.7;
+  margin-bottom: 20px;
+}
+
+/* Contenido de las pestañas */
+.tab-content {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 50px; /* Reducido de 60px a 50px */
+  padding: 0 10px; /* Aumentado de 5px a 10px para más espacio horizontal */
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--empty-state-color, #999);
+  margin-top: 30px;
+  font-style: italic;
+}
+
+/* Estilos para publicaciones */
+.publicaciones-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Añadimos espacio entre publicaciones */
+  padding: 10px 0; /* Añadimos espacio superior e inferior */
+}
+
+.post-item {
+  background-color: var(--post-bg, rgba(255, 255, 255, 0.05));
+  padding: 15px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border-color, rgba(255,255,255,0.1));
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.post-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #8B1E41;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.post-info {
+  flex: 1;
+}
+
+.post-author {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary, #333);
+}
+
+.post-time {
+  font-size: 12px;
+  color: var(--text-secondary, #888);
+  opacity: 0.7;
+}
+
+.post-content {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  color: var(--text-primary, black);
+  padding: 5px 0;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  background-color: transparent;
+  margin: 0;
+  padding: 8px 0 0 0; /* Reducimos el padding */
+}
+
+.post-action-btn {
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  padding: 5px 10px;
+  cursor: pointer;
+  color: var(--text-primary, black);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.post-action-btn:hover {
+  opacity: 0.8;
+}
+
+.post-divider {
+  border: none;
+  height: 1px;
+  background-color: var(--border-color, rgba(0,0,0,0.1));
+  margin: 5px 0;
+}
+
+/* Cuadrícula de contenido */
+.content-grid-new {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 15px 0 25px 0;
+  padding: 0 5px;
+}
+
+.grid-item-new {
+  background-color: var(--grid-bg, rgba(139, 30, 65, 0.1));
+  border-radius: 12px;
+  aspect-ratio: 1/1;
+  position: relative;
+  overflow: hidden;
+}
+
+.grid-item-new img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Botón OK */
+.ok-button {
+  position: absolute;
+  right: 20px;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  padding: 6px 20px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.ok-button:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Botón de acción flotante */
+.action-button-new {
+  position: absolute;
+  left: 50%;
+  top: -20px;
+  transform: translateX(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background-color: #8B1E41;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  cursor: pointer;
+  border: 2px solid white;
+  transition: background-color 0.3s;
+}
+
+.action-button-new:hover {
+  background-color: #AD3F62;
+}
+
+/* Barra de navegación inferior */
+.bottom-nav-new {
+  height: 60px;
+  background: linear-gradient(to right, #8B1E41, #AD3F62);
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  margin: 0;
+  position: fixed;
+  bottom: 0;
+  width: 500px; /* Mismo ancho que el contenedor principal */
+  z-index: 15;
+  /* Centramos el elemento */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.menu-container {
+  position: relative;
+}
+
+.menu-icon {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+/* Estilos para el menú desplegable */
+.dropdown-menu {
+  position: absolute;
+  bottom: 65px;
+  left: -10px;
+  width: 180px;
+  background-color: var(--content-bg, #222);
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  animation: menuIn 0.2s ease;
+  z-index: 100;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+}
+
+@keyframes menuIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.menu-item:hover {
+  background-color: var(--hover-bg, rgba(255, 255, 255, 0.1));
+}
+
+.menu-item-icon {
+  margin-right: 12px;
+  font-size: 16px;
+}
+
+.menu-item-text {
+  color: var(--text-color, white);
+  font-size: 14px;
+}
+
+/* Overlay de fondo para cuando se abre el perfil */
+.profile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+/* Animación para aparecer */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -40%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+.user-profile-container-new {
+  animation: fadeIn 0.3s ease forwards;
+}

@@ -7,12 +7,12 @@
 
 .social-post {
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px var(--shadow-color, rgba(0, 0, 0, 0.1));
   padding: 15px;
   transition: transform 0.2s ease, box-shadow 0.3s ease;
   cursor: pointer;
   margin-bottom: 15px;
-  background-color: rgba(40, 44, 52, 0.6) !important;
+  background-color: var(--card-bg, rgba(40, 44, 52, 0.6)) !important;
 }
 
 .social-post:hover {
@@ -53,7 +53,7 @@
 
 .publication-date {
   font-size: 12px;
-  color: #888;
+  color: var(--text-secondary, #888);
 }
 
 .post-content {
@@ -64,6 +64,7 @@
   font-size: 14px;
   line-height: 1.5;
   margin-bottom: 10px;
+  color: var(--text-primary, inherit);
 }
 
 .post-media {
@@ -83,7 +84,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--card-secondary, rgba(255, 255, 255, 0.05));
   padding: 10px;
   border-radius: 8px;
   margin-top: 10px;

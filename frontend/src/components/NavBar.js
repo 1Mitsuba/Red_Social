@@ -24,7 +24,9 @@ const NavBar = ({ activeTab, setActiveTab }) => {
         borderBottom: activeTab === id 
           ? `3px solid ${theme.colors.primary}`
           : '3px solid transparent',
-        color: activeTab === id ? theme.colors.primary : '#666',
+        color: activeTab === id 
+          ? theme.colors.primary 
+          : isDarkMode ? 'rgba(255,255,255,0.7)' : '#666',
         transition: 'all 0.2s ease',
         fontWeight: activeTab === id ? '600' : '500',
         fontSize: '15px',
