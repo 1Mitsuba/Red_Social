@@ -1,0 +1,290 @@
+/* Nuevo estilo para LoginForm - centralizado y con scroll visible */
+
+/* Contenedor principal - pantalla completa */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #121212;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+/* Tarjeta de login */
+.login-card {
+  width: 100%;
+  max-width: 460px;
+  padding: 25px;
+  background-color: #1E1E1E;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  color: #E0E0E0;
+  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+}
+
+/* Scroll personalizado - más sencillo y elegante */
+.login-card::-webkit-scrollbar {
+  width: 12px; /* Scrollbar más delgado */
+}
+
+.login-card::-webkit-scrollbar-track {
+  background: #2A2A2A;
+  border-radius: 6px;
+  margin: 2px;
+}
+
+.login-card::-webkit-scrollbar-thumb {
+  background: #AD3F62; /* Color sólido más elegante */
+  border-radius: 6px;
+  border: 2px solid #2A2A2A;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.login-card::-webkit-scrollbar-thumb:hover {
+  background: #C5637F;
+}
+
+/* Scrollbar simplificado con flechas claras y visibles - eliminando duplicados */
+.login-card::-webkit-scrollbar {
+  width: 12px;
+}
+
+.login-card::-webkit-scrollbar-track {
+  background: #2A2A2A;
+  border-radius: 6px;
+}
+
+.login-card::-webkit-scrollbar-thumb {
+  background: #AD3F62;
+  border-radius: 6px;
+  border: 2px solid #2A2A2A;
+}
+
+/* Ocultar todos los botones por defecto */
+.login-card::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* Solo mostrar botones específicos */
+.login-card::-webkit-scrollbar-button:single-button:vertical:decrement {
+  display: block;
+  height: 20px;
+  background-color: #AD3F62;
+  border-radius: 6px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpolygon points='6,0 0,6 12,6' fill='white'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px;
+}
+
+.login-card::-webkit-scrollbar-button:single-button:vertical:increment {
+  display: block;
+  height: 20px;
+  background-color: #AD3F62;
+  border-radius: 6px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpolygon points='0,0 12,0 6,6' fill='white'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px;
+}
+
+/* Indicador de scroll - más pequeño y sutil */
+.scroll-indicator {
+  position: fixed;
+  bottom: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #AD3F62;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: normal;
+  z-index: 1100;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  animation: bounce 2s infinite;
+  opacity: 0.85;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-10px); }
+}
+
+/* Logo y encabezado */
+.login-logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-logo {
+  height: 70px;
+  margin-bottom: 15px;
+}
+
+.login-title {
+  color: #AD3F62;
+  font-size: 32px;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.login-subtitle {
+  color: #A0A0A0;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Pestañas */
+.login-tab-container {
+  display: flex;
+  border-bottom: 1px solid #333;
+  margin-bottom: 20px;
+}
+
+.login-tab {
+  flex: 1;
+  padding: 15px 10px;
+  text-align: center;
+  cursor: pointer;
+  color: #A0A0A0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.login-tab.active {
+  color: #AD3F62;
+  font-weight: bold;
+  border-bottom: 2px solid #AD3F62;
+}
+
+.tab-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #AD3F62;
+  color: white;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+/* Formularios */
+.login-form-group {
+  margin-bottom: 15px;
+}
+
+.login-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #E0E0E0;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.login-input {
+  width: 100%;
+  padding: 12px;
+  background-color: #2A2A2A;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #E0E0E0;
+  font-size: 15px;
+  transition: all 0.3s;
+}
+
+.login-input:focus {
+  border-color: #AD3F62;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(173, 63, 98, 0.2);
+}
+
+.login-button {
+  width: 100%;
+  padding: 14px;
+  background-color: #AD3F62;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+}
+
+.login-button:hover {
+  background-color: #C5637F;
+}
+
+.login-error {
+  color: #F44336;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+/* Formulario de registro */
+.signup-form {
+  padding-right: 5px;
+  margin-bottom: 20px;
+}
+
+/* Sección de demo */
+.login-demo-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #333;
+}
+
+.login-demo-title {
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 15px;
+  color: #E0E0E0;
+}
+
+.login-demo-button {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  background-color: #2A2A2A;
+  border: 1px solid #333;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #E0E0E0;
+  transition: all 0.3s;
+  text-align: left;
+}
+
+.login-demo-button:hover {
+  background-color: #3D2029;
+}
+
+.login-demo-icon {
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+/* Footer */
+.login-footer {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid #333;
+  text-align: center;
+  color: #A0A0A0;
+  font-size: 13px;
+}

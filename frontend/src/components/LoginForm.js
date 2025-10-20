@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { Card, Button, Heading } from './UIComponents';
+import '../styles/LoginFormNew.css';
 
 const LoginForm = () => {
   const { theme } = useTheme();
@@ -16,6 +17,21 @@ const LoginForm = () => {
     rol: 'estudiante'
   });
   const [error, setError] = useState(null);
+  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
+  
+  // Mostrar indicador de scroll cuando estamos en la pestaña de registro
+  useEffect(() => {
+    if (activeTab === 'signup') {
+      setShowScrollIndicator(true);
+      const timer = setTimeout(() => {
+        setShowScrollIndicator(false);
+      }, 4000); // Ocultar después de 4 segundos
+      
+      return () => clearTimeout(timer);
+    } else {
+      setShowScrollIndicator(false);
+    }
+  }, [activeTab]);
   
   const handleChange = (e) => {
     setFormData({
@@ -58,88 +74,42 @@ const LoginForm = () => {
   };
 
   return (
-    <div style={{ 
-      display: 'flex',
-      minHeight: '100vh',
-      backgroundColor: theme.colors.background,
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: theme.spacing.md
-    }}>
-      <Card style={{ 
-        maxWidth: '460px',
-        width: '100%',
-        padding: theme.spacing.xl,
-        boxShadow: theme.shadows.large
-      }}>
-        <div style={{ 
-          marginBottom: theme.spacing.lg,
-          textAlign: 'center'
-        }}>
+    <div className="login-container">
+      {showScrollIndicator && <div className="scroll-indicator">Desliza para ver más</div>}
+      
+      <div className="login-card">
+        <div className="login-logo-container">
           <img 
             src="https://storage.googleapis.com/copilot-img-chat/6fc0e9ae-dbf9-432d-9b5f-b5e9fc07c605.png" 
             alt="Universidad del Valle Bolivia" 
-            style={{ height: '60px', marginBottom: theme.spacing.md }}
+            className="login-logo"
           />
-          <Heading level={1} style={{ color: theme.colors.primary, textAlign: 'center', marginBottom: theme.spacing.xs }}>
-            Red Univalle
-          </Heading>
-          <p style={{ color: theme.colors.textLight, marginBottom: theme.spacing.lg }}>
+          <h1 className="login-title">Red Univalle</h1>
+          <p className="login-subtitle">
             Plataforma para estudiantes, docentes y personal de la universidad
           </p>
         </div>
         
-        <div style={{ marginBottom: theme.spacing.lg }}>
-          <div style={{ 
-            display: 'flex', 
-            borderBottom: `1px solid ${theme.colors.border}`,
-            marginBottom: theme.spacing.md
-          }}>
-            <div 
-              onClick={() => setActiveTab('login')}
-              style={{
-                padding: theme.spacing.sm,
-                flex: 1,
-                textAlign: 'center',
-                borderBottom: activeTab === 'login' 
-                  ? `2px solid ${theme.colors.primary}`
-                  : '2px solid transparent',
-                color: activeTab === 'login' ? theme.colors.primary : theme.colors.text,
-                fontWeight: activeTab === 'login' ? 'bold' : 'normal',
-                cursor: 'pointer'
-              }}
-            >
-              Iniciar Sesión
-            </div>
-            <div 
-              onClick={() => setActiveTab('signup')}
-              style={{
-                padding: theme.spacing.sm,
-                flex: 1,
-                textAlign: 'center',
-                borderBottom: activeTab === 'signup' 
-                  ? `2px solid ${theme.colors.primary}`
-                  : '2px solid transparent',
-                color: activeTab === 'signup' ? theme.colors.primary : theme.colors.text,
-                fontWeight: activeTab === 'signup' ? 'bold' : 'normal',
-                cursor: 'pointer'
-              }}
-            >
-              Registrarse
-            </div>
+        <div className="login-tab-container">
+          <div 
+            onClick={() => setActiveTab('login')}
+            className={`login-tab ${activeTab === 'login' ? 'active' : ''}`}
+          >
+            Iniciar Sesión
           </div>
+          <div 
+            onClick={() => setActiveTab('signup')}
+            className={`login-tab ${activeTab === 'signup' ? 'active' : ''}`}
+          >
+            Registrarse
+            {activeTab === 'signup' && <span className="tab-badge">10</span>}
+          </div>
+        </div>
           
           {activeTab === 'login' ? (
             <form onSubmit={handleLoginSubmit}>
-              <div style={{ marginBottom: theme.spacing.md }}>
-                <label 
-                  htmlFor="email"
-                  style={{ 
-                    display: 'block', 
-                    marginBottom: theme.spacing.xs,
-                    fontWeight: '500'
-                  }}
-                >
+              <div className="login-form-group">
+                <label htmlFor="email" className="login-label">
                   Correo Electrónico
                 </label>
                 <input
@@ -149,25 +119,12 @@ const LoginForm = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="ejemplo@univalle.edu"
-                  style={{
-                    width: '100%',
-                    padding: theme.spacing.sm,
-                    borderRadius: theme.borderRadius.small,
-                    border: `1px solid ${theme.colors.border}`,
-                    backgroundColor: theme.colors.background
-                  }}
+                  className="login-input"
                 />
               </div>
               
-              <div style={{ marginBottom: theme.spacing.md }}>
-                <label 
-                  htmlFor="password"
-                  style={{ 
-                    display: 'block', 
-                    marginBottom: theme.spacing.xs,
-                    fontWeight: '500'
-                  }}
-                >
+              <div className="login-form-group">
+                <label htmlFor="password" className="login-label">
                   Contraseña
                 </label>
                 <input
@@ -177,50 +134,27 @@ const LoginForm = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  style={{
-                    width: '100%',
-                    padding: theme.spacing.sm,
-                    borderRadius: theme.borderRadius.small,
-                    border: `1px solid ${theme.colors.border}`,
-                    backgroundColor: theme.colors.background
-                  }}
+                  className="login-input"
                 />
               </div>
               
               {error && (
-                <div style={{ 
-                  color: theme.colors.notification,
-                  marginBottom: theme.spacing.md,
-                  padding: theme.spacing.sm,
-                  backgroundColor: `${theme.colors.notification}15`,
-                  borderRadius: theme.borderRadius.small
-                }}>
+                <div className="login-error">
                   {error}
                 </div>
               )}
               
-              <div style={{ marginBottom: theme.spacing.lg }}>
-                <Button
-                  variant="primary"
-                  fullWidth
-                  style={{ marginBottom: theme.spacing.sm }}
-                  onClick={handleLoginSubmit}
-                >
-                  Iniciar Sesión
-                </Button>
-              </div>
+              <button
+                className="login-button"
+                type="submit"
+              >
+                Iniciar Sesión
+              </button>
             </form>
           ) : (
-            <form onSubmit={handleRegisterSubmit}>
-              <div style={{ marginBottom: theme.spacing.md }}>
-                <label 
-                  htmlFor="nombre"
-                  style={{ 
-                    display: 'block', 
-                    marginBottom: theme.spacing.xs,
-                    fontWeight: '500'
-                  }}
-                >
+            <form onSubmit={handleRegisterSubmit} className="signup-form">
+              <div className="login-form-group">
+                <label htmlFor="nombre" className="login-label">
                   Nombre
                 </label>
                 <input
@@ -230,25 +164,12 @@ const LoginForm = () => {
                   value={formData.nombre}
                   onChange={handleChange}
                   placeholder="Tu nombre"
-                  style={{
-                    width: '100%',
-                    padding: theme.spacing.sm,
-                    borderRadius: theme.borderRadius.small,
-                    border: `1px solid ${theme.colors.border}`,
-                    backgroundColor: theme.colors.background
-                  }}
+                  className="login-input"
                 />
               </div>
               
-              <div style={{ marginBottom: theme.spacing.md }}>
-                <label 
-                  htmlFor="apellido"
-                  style={{ 
-                    display: 'block', 
-                    marginBottom: theme.spacing.xs,
-                    fontWeight: '500'
-                  }}
-                >
+              <div className="login-form-group">
+                <label htmlFor="apellido" className="login-label">
                   Apellido
                 </label>
                 <input
@@ -258,25 +179,12 @@ const LoginForm = () => {
                   value={formData.apellido}
                   onChange={handleChange}
                   placeholder="Tu apellido"
-                  style={{
-                    width: '100%',
-                    padding: theme.spacing.sm,
-                    borderRadius: theme.borderRadius.small,
-                    border: `1px solid ${theme.colors.border}`,
-                    backgroundColor: theme.colors.background
-                  }}
+                  className="login-input"
                 />
               </div>
               
-              <div style={{ marginBottom: theme.spacing.md }}>
-                <label 
-                  htmlFor="email-signup"
-                  style={{ 
-                    display: 'block', 
-                    marginBottom: theme.spacing.xs,
-                    fontWeight: '500'
-                  }}
-                >
+              <div className="login-form-group">
+                <label htmlFor="email-signup" className="login-label">
                   Correo Electrónico
                 </label>
                 <input
@@ -286,25 +194,12 @@ const LoginForm = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="ejemplo@univalle.edu"
-                  style={{
-                    width: '100%',
-                    padding: theme.spacing.sm,
-                    borderRadius: theme.borderRadius.small,
-                    border: `1px solid ${theme.colors.border}`,
-                    backgroundColor: theme.colors.background
-                  }}
+                  className="login-input"
                 />
               </div>
               
-              <div style={{ marginBottom: theme.spacing.md }}>
-                <label 
-                  htmlFor="password-signup"
-                  style={{ 
-                    display: 'block', 
-                    marginBottom: theme.spacing.xs,
-                    fontWeight: '500'
-                  }}
-                >
+              <div className="login-form-group">
+                <label htmlFor="password-signup" className="login-label">
                   Contraseña
                 </label>
                 <input
@@ -314,25 +209,12 @@ const LoginForm = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  style={{
-                    width: '100%',
-                    padding: theme.spacing.sm,
-                    borderRadius: theme.borderRadius.small,
-                    border: `1px solid ${theme.colors.border}`,
-                    backgroundColor: theme.colors.background
-                  }}
+                  className="login-input"
                 />
               </div>
               
-              <div style={{ marginBottom: theme.spacing.md }}>
-                <label 
-                  htmlFor="confirm-password"
-                  style={{ 
-                    display: 'block', 
-                    marginBottom: theme.spacing.xs,
-                    fontWeight: '500'
-                  }}
-                >
+              <div className="login-form-group">
+                <label htmlFor="confirm-password" className="login-label">
                   Confirmar Contraseña
                 </label>
                 <input
@@ -342,25 +224,12 @@ const LoginForm = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  style={{
-                    width: '100%',
-                    padding: theme.spacing.sm,
-                    borderRadius: theme.borderRadius.small,
-                    border: `1px solid ${theme.colors.border}`,
-                    backgroundColor: theme.colors.background
-                  }}
+                  className="login-input"
                 />
               </div>
               
-              <div style={{ marginBottom: theme.spacing.md }}>
-                <label 
-                  htmlFor="rol"
-                  style={{ 
-                    display: 'block', 
-                    marginBottom: theme.spacing.xs,
-                    fontWeight: '500'
-                  }}
-                >
+              <div className="login-form-group">
+                <label htmlFor="rol" className="login-label">
                   Rol
                 </label>
                 <select
@@ -368,94 +237,111 @@ const LoginForm = () => {
                   name="rol"
                   value={formData.rol}
                   onChange={handleChange}
-                  style={{
-                    width: '100%',
-                    padding: theme.spacing.sm,
-                    borderRadius: theme.borderRadius.small,
-                    border: `1px solid ${theme.colors.border}`,
-                    backgroundColor: theme.colors.background
-                  }}
+                  className="login-input"
                 >
                   <option value="estudiante">Estudiante</option>
                   <option value="docente">Docente</option>
                 </select>
               </div>
               
+              <div className="login-form-group">
+                <label htmlFor="ci" className="login-label">
+                  Cédula de Identidad
+                </label>
+                <input
+                  type="text"
+                  id="ci"
+                  name="ci"
+                  placeholder="12345678"
+                  className="login-input"
+                />
+              </div>
+              
+              <div className="login-form-group">
+                <label htmlFor="telefono" className="login-label">
+                  Teléfono
+                </label>
+                <input
+                  type="text"
+                  id="telefono"
+                  name="telefono"
+                  placeholder="70123456"
+                  className="login-input"
+                />
+              </div>
+              
+              <div className="login-form-group">
+                <label htmlFor="direccion" className="login-label">
+                  Dirección
+                </label>
+                <input
+                  type="text"
+                  id="direccion"
+                  name="direccion"
+                  placeholder="Av. Principal #123"
+                  className="login-input"
+                />
+              </div>
+              
+              <div className="login-form-group">
+                <label htmlFor="carrera" className="login-label">
+                  Carrera
+                </label>
+                <input
+                  type="text"
+                  id="carrera"
+                  name="carrera"
+                  placeholder="Ingeniería de Sistemas"
+                  className="login-input"
+                />
+              </div>
+              
               {error && (
-                <div style={{ 
-                  color: theme.colors.notification,
-                  marginBottom: theme.spacing.md,
-                  padding: theme.spacing.sm,
-                  backgroundColor: `${theme.colors.notification}15`,
-                  borderRadius: theme.borderRadius.small
-                }}>
+                <div className="login-error">
                   {error}
                 </div>
               )}
               
-              <div style={{ marginBottom: theme.spacing.md }}>
-                <Button
-                  variant="primary"
-                  fullWidth
-                  onClick={handleRegisterSubmit}
-                >
-                  Registrarse
-                </Button>
-              </div>
+              <button
+                className="login-button"
+                type="submit"
+              >
+                Registrarse
+              </button>
             </form>
           )}
-        </div>
         
-        <div style={{ 
-          borderTop: `1px solid ${theme.colors.border}`, 
-          paddingTop: theme.spacing.md,
-          marginBottom: theme.spacing.md
-        }}>
-          <h3 style={{ 
-            textAlign: 'center', 
-            color: theme.colors.primary,
-            marginBottom: theme.spacing.md 
-          }}>
+        <div className="login-demo-section">
+          <h3 className="login-demo-title">
             Acceso Rápido para Demostración
           </h3>
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: theme.spacing.sm
-          }}>
-            <Button
-              variant="secondary"
-              fullWidth
+          <div>
+            <button
+              className="login-demo-button"
               onClick={() => quickLogin('estudiante')}
             >
-              👨‍🎓 Ingresar como Estudiante
-            </Button>
-            <Button
-              variant="secondary"
-              fullWidth
+              <span className="login-demo-icon">👨‍🎓</span> Ingresar como Estudiante
+            </button>
+            <button
+              className="login-demo-button"
               onClick={() => quickLogin('docente')}
             >
-              👨‍🏫 Ingresar como Docente
-            </Button>
-            <Button
-              variant="secondary"
-              fullWidth
+              <span className="login-demo-icon">👨‍🏫</span> Ingresar como Docente
+            </button>
+            <button
+              className="login-demo-button"
               onClick={() => quickLogin('administrador')}
             >
-              👨‍💼 Ingresar como Administrador
-            </Button>
+              <span className="login-demo-icon">👨‍💼</span> Ingresar como Administrador
+            </button>
           </div>
         </div>
         
-        <div style={{ 
-          textAlign: 'center',
-          color: theme.colors.textLight,
-          fontSize: '0.8rem'
-        }}>
-          <p>Red Social Univalle - Universidad del Valle Bolivia</p>
-          <p>© 2025 Todos los derechos reservados</p>
+        <div className="login-footer">
+          Red Social Univalle - Universidad del Valle Bolivia<br />
+          © 2025 Todos los derechos reservados
         </div>
-      </Card>
+      </div>
     </div>
   );
 };

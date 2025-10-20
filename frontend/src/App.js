@@ -9,6 +9,7 @@ import MessagesModule from './components/MessagesModule';
 import NotificationsModule from './components/NotificationsModule';
 import SettingsModule from './components/SettingsModule';
 import LoginForm from './components/LoginForm';
+import websocketConfig from './services/websocketConfig';
 import './styles.css';
 import './styles/globalStyles.css';
 import './styles/app.css';
@@ -16,6 +17,36 @@ import './styles/app.css';
 const App = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [activeModule, setActiveModule] = useState('social');
+  const [socket, setSocket] = useState(null);
+
+  // Inicializar la conexión WebSocket
+  useEffect(() => {
+    // Suprimir errores de WebSocket para evitar mensajes en consola
+    const originalConsoleError = console.error;
+    console.error = (...args) => {
+      if (args[0] && typeof args[0] === 'string' && args[0].includes('WebSocket')) {
+        // Suprimimos los errores de WebSocket en la consola
+        return;
+      }
+      originalConsoleError.apply(console, args);
+    };
+
+    // Intentar establecer conexión WebSocket
+    try {
+      const newSocket = websocketConfig.createConnection();
+      setSocket(newSocket);
+    } catch (error) {
+      // Manejar silenciosamente
+    }
+
+    // Restaurar console.error al desmontar el componente
+    return () => {
+      console.error = originalConsoleError;
+      if (socket) {
+        socket.close();
+      }
+    };
+  }, []);
 
   // Función para manejar el cambio de módulo desde el Sidebar
   const handleModuleChange = (moduleId) => {
