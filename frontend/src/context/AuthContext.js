@@ -15,6 +15,20 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Predefined demo users (used for demo mode via ?demo=1)
+  const predefinedUsers = {
+    estudiante: {
+      id: 'est-demo',
+      nombre: 'Demo Estudiante',
+      apellido: 'Demo',
+      correo: 'demo.estudiante@demo.local',
+      ci_est: '00000000',
+      carrera: 'Demo Carrera',
+      semestre: 1,
+      rol: 'estudiante'
+    }
+  };
+
   // Función para iniciar sesión (simulada)
   const login = (userData) => {
     try {
@@ -117,6 +131,19 @@ export const AuthProvider = ({ children }) => {
         setUser(JSON.parse(storedUser));
       } catch (error) {
         console.error('Error al recuperar datos del usuario:', error);
+      }
+    }
+    else {
+      // Si no hay usuario guardado, permitir modo demo con query string ?demo=1
+      try {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('demo') === '1') {
+          // set demo user
+          setUser(predefinedUsers.estudiante);
+          localStorage.setItem('user-data', JSON.stringify(predefinedUsers.estudiante));
+        }
+      } catch (e) {
+        // ignore in non-browser environments
       }
     }
   }, []);
