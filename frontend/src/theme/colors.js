@@ -1,4 +1,4 @@
-﻿// Paleta de colores para la aplicación
+// Paleta de colores para la aplicación
 export const lightColors = {
   primary: '#8B1E41', // Guindo/Borgoña principal
   primaryLight: '#B23556', // Un tono más vibrante del principal

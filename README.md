@@ -14,7 +14,7 @@ Esta aplicación tiene como objetivo mejorar la experiencia universitaria median
 
 ## Estructura del Proyecto
 
-```
+\`\`\`
 proyecto/
 ├── frontend/                  # Aplicación React Native Web
 │   ├── src/                   # Código fuente
@@ -24,7 +24,7 @@ proyecto/
 └── backend/                   # Servidor FastAPI
     ├── app/                   # Código fuente
     └── ...                    # Configuración
-```
+\`\`\`
 
 ## Tecnologías Utilizadas
 
@@ -59,46 +59,46 @@ La aplicación cuenta con un modo claro y un modo oscuro, que respeta la paleta 
 ### Frontend
 
 1. Instalar dependencias:
-```bash
+\`\`\`bash
 cd frontend
 npm install
-```
+\`\`\`
 
 2. Configurar variables de entorno:
-```bash
+\`\`\`bash
 cp .env.example .env
 # Editar .env con las claves correspondientes
-```
+\`\`\`
 
 3. Iniciar el servidor de desarrollo:
-```bash
+\`\`\`bash
 npm start
-```
+\`\`\`
 
 ### Backend
 
 1. Crear un entorno virtual:
-```bash
+\`\`\`bash
 cd backend
 python -m venv venv
 source venv/bin/activate  # En Windows: venv\Scripts\activate
-```
+\`\`\`
 
 2. Instalar dependencias:
-```bash
+\`\`\`bash
 pip install -r requirements.txt
-```
+\`\`\`
 
 3. Configurar variables de entorno:
-```bash
+\`\`\`bash
 cp .env.example .env
 # Editar .env con las claves correspondientes
-```
+\`\`\`
 
 4. Iniciar el servidor:
-```bash
+\`\`\`bash
 uvicorn app.main:app --reload
-```
+\`\`\`
 
 ## Características Principales
 
@@ -135,14 +135,14 @@ Se han creado nuevos componentes organizados por módulos para mejorar la estruc
 Para utilizar la versión mejorada de la interfaz:
 
 1. Renombre `AppNew.js` a `App.js`:
-```bash
+\`\`\`bash
 mv src/AppNew.js src/App.js
-```
+\`\`\`
 
 2. Renombre `styles.css.new` a `styles.css`:
-```bash
+\`\`\`bash
 mv src/styles.css.new src/styles.css
-```
+\`\`\`
 
 ## Licencia
 
