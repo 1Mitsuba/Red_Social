@@ -4,11 +4,12 @@ import '../styles/DetailPanel.css';
 import '../styles/CarpoolingDetail.css';
 import '../styles/Messages.css';
 
-const DetailPanel = ({ item }) => {
+const DetailPanel = ({ item, onClose }) => {
   const { theme } = useTheme();
   const [showAllComments, setShowAllComments] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [messageText, setMessageText] = useState("");
+  const [localComments, setLocalComments] = useState([]);
   
   // Default item para mostrar siempre un ejemplo como en la imagen
   const defaultItem = {
@@ -23,6 +24,11 @@ const DetailPanel = ({ item }) => {
   
   // Usar el item seleccionado o el default
   item = item || defaultItem;
+
+  // Inicializar comentarios locales cuando cambie el item
+  React.useEffect(() => {
+    setLocalComments(item.comentarios || []);
+  }, [item]);
   
   // Renderizar diferentes tipos de detalle según el tipo de elemento
   const renderDetailContent = () => {
@@ -158,14 +164,6 @@ const DetailPanel = ({ item }) => {
               <div className="passenger-status">Confirmado</div>
             </div>
           ))}
-          
-          {parseInt(item.price.split('/')[0]) < parseInt(item.price.split('/')[1]) && (
-            <div className="add-passenger">
-              <button className="add-passenger-btn" style={{ color: theme.colors.primary }}>
-                + Unirme al viaje
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </>
@@ -374,15 +372,15 @@ const DetailPanel = ({ item }) => {
         </div>
       </div>
       
-      {item.comentarios && (
+      { (localComments && localComments.length >= 0) && (
         <div className="history-section">
           <div className="comments-divider"></div>
           <div className="history-tabs">
-            <div className="history-tab active">Comentarios ({item.comentarios.length})</div>
+            <div className="history-tab active">Comentarios ({localComments.length})</div>
           </div>
           
           <div className="comments-list">
-            {(showAllComments ? item.comentarios : item.comentarios.slice(0, 3)).map((comment, idx) => (
+            {(showAllComments ? localComments : localComments.slice(0, 3)).map((comment, idx) => (
               <div key={idx} className="comment-item">
                 <div className="comment-avatar">
                   <img src={comment.userAvatar || `https://ui-avatars.com/api/?name=${comment.userName}&background=random`} alt={comment.userName} />
@@ -407,6 +405,50 @@ const DetailPanel = ({ item }) => {
               </div>
             )}
           </div>
+          {/* Input para añadir comentario en detalle */}
+          <div className="add-comment-section">
+            <div className="comment-input-container">
+              <input 
+                type="text" 
+                className="comment-input" 
+                placeholder="Escribe un comentario..." 
+                value={messageText} 
+                onChange={e => setMessageText(e.target.value)}
+                onKeyPress={e => {
+                  if (e.key === 'Enter' && messageText.trim()) {
+                    const comment = {
+                      id: `c-${Date.now()}`,
+                      userName: 'Tú',
+                      userAvatar: `https://ui-avatars.com/api/?name=Tu&background=random`,
+                      contenido: messageText,
+                      fecha: new Date().toISOString()
+                    };
+                    setLocalComments(prev => [comment, ...prev]);
+                    setMessageText('');
+                  }
+                }}
+              />
+              <button 
+                className="comment-submit-btn" 
+                onClick={() => {
+                  if (!messageText.trim()) return;
+                  const comment = {
+                    id: `c-${Date.now()}`,
+                    userName: 'Tú',
+                    userAvatar: `https://ui-avatars.com/api/?name=Tu&background=random`,
+                    contenido: messageText,
+                    fecha: new Date().toISOString()
+                  };
+                  setLocalComments(prev => [comment, ...prev]);
+                  setMessageText('');
+                }}
+                disabled={!messageText.trim()}
+                style={{ background: messageText.trim() ? `linear-gradient(145deg, ${theme.colors.primary}, ${theme.colors.primaryLight})` : 'rgba(255,255,255,0.1)' }}
+              >
+                Comentar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </>
@@ -428,6 +470,11 @@ const DetailPanel = ({ item }) => {
           {item.tipo === 'carpooling' && <div className="action-button" title="Compartir ruta">🔗</div>}
           {item.tipo === 'conversacion' && <div className="action-button" title="Información">ℹ️</div>}
           <div className="action-button" title="Favoritos">⭐</div>
+          {onClose && (
+            <button className="detail-close-btn" onClick={onClose} title="Cerrar">
+              ✕
+            </button>
+          )}
         </div>
       </div>
       

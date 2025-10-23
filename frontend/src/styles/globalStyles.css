@@ -118,6 +118,10 @@ body {
   flex-direction: column;
   overflow: hidden;
 }
+/* Evitar que la sección principal se reduzca demasiado cuando aparece el panel de detalle */
+.collections-section {
+  min-width: 520px; /* impide colapsos extremos en pantallas grandes */
+}
 
 .collections-header {
   display: flex;
@@ -518,6 +522,89 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+/* Carpooling cards - estilos específicos */
+.collection-card.carpooling-card {
+  min-height: 320px;
+  width: 340px;
+  max-width: 340px;
+  flex: 0 0 340px;
+  display: flex;
+  flex-direction: column;
+}
+
+.carpooling-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.route-points {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.route-arrow {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 18px;
+}
+
+.route-start, .route-end {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.route-time, .route-days {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 6px;
+}
+
+.time-icon, .days-icon {
+  font-size: 14px;
+}
+
+.capacity-tag {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.capacity-tag.baja {
+  background: rgba(76, 175, 80, 0.2);
+  color: #81c784;
+}
+
+.capacity-tag.media {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffb74d;
+}
+
+.capacity-tag.alta {
+  background: rgba(244, 67, 54, 0.2);
+  color: #e57373;
+}
+
+.stops-info {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.route-date {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .detail-item {

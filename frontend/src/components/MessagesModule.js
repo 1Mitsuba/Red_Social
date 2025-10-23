@@ -191,7 +191,7 @@ const MessagesModule = ({ onSelectItem, selectedItem }) => {
         </div>
       </div>
       
-      {selectedItem && <DetailPanel item={selectedItem} />}
+      {selectedItem && <DetailPanel item={selectedItem} onClose={() => onSelectItem(null)} />}
     </>
   );
 };
