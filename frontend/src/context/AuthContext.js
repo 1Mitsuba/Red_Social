@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { authService } from '../services/authService';
 
 // Contexto de autenticación
 const AuthContext = createContext();
@@ -10,40 +11,47 @@ export const useAuth = () => {
 
 // Proveedor del contexto de autenticación
 export const AuthProvider = ({ children }) => {
-  // Estado para almacenar información del usuario
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Predefined demo users (used for demo mode via ?demo=1)
-  const predefinedUsers = {
-    estudiante: {
-      id: 'est-demo',
-      nombre: 'Demo Estudiante',
-      apellido: 'Demo',
-      correo: 'demo.estudiante@demo.local',
-      ci_est: '00000000',
-      carrera: 'Demo Carrera',
-      semestre: 1,
-      rol: 'estudiante'
+  // Verificar autenticación al cargar
+  useEffect(() => {
+    const userData = localStorage.getItem('user-data');
+    if (userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch (e) {
+        console.error('Error parsing user data:', e);
+        localStorage.removeItem('user-data');
+      }
     }
-  };
+    setLoading(false);
+  }, []);
 
-  // Función para iniciar sesión (simulada)
-  const login = (userData) => {
+  // Función para iniciar sesión
+  const login = async (email, password) => {
     try {
-      console.log('Iniciando sesión con:', userData);
-      // Simulamos un usuario autenticado
-      setUser(userData);
+      setLoading(true);
+      setError(null);
       
-      // Guardamos en localStorage para persistencia entre recargas
-      localStorage.setItem('user-data', JSON.stringify(userData));
+      const { data, error } = await authService.signIn(email, password);
       
-      return { user: userData };
+      if (error) {
+        const errorMessage = typeof error === 'string' ? error : error.message || 'Error al iniciar sesión';
+        setError(errorMessage);
+        return { error: errorMessage };
+      }
+      
+      setUser(data.user);
+      return { user: data.user };
     } catch (error) {
+      const errorMessage = 'Error al iniciar sesión. Por favor intenta de nuevo.';
       console.error('Error al iniciar sesión:', error);
-      setError('Error al iniciar sesión');
-      return { error: 'Error al iniciar sesión' };
+      setError(errorMessage);
+      return { error: errorMessage };
+    } finally {
+      setLoading(false);
     }
   };
 

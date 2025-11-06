@@ -1,152 +1,123 @@
-import { supabase, handleSupabaseError } from './supabase';
-import * as SecureStore from '../utils/secureStore';
+import axios from 'axios';
 
-// Servicio de autenticación que utiliza Supabase
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
+
+// Servicio de autenticación simple que usa nuestro backend directamente
 export const authService = {
   // Iniciar sesión con correo y contraseña
   signIn: async (email, password) => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      // Configuración del header para Content-Type
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      const response = await axios.post(
+        `${API_URL}/auth/login`, 
+        { email, password },
+        config
+      );
       
-      if (error) {
-        return { error: handleSupabaseError(error) };
+      if (response.data.access_token) {
+        localStorage.setItem('user-token', response.data.access_token);
+        if (response.data.user) {
+          localStorage.setItem('user-data', JSON.stringify(response.data.user));
+        }
       }
       
-      if (data?.session) {
-        await SecureStore.setItem('user-token', data.session.access_token);
-      }
-      
-      return { data };
+      return { data: response.data };
     } catch (error) {
       console.error('Error en el servicio de autenticación (signIn):', error);
-      return { error: { message: 'Error al iniciar sesión', details: error.message } };
+      
+      // Manejar diferentes tipos de errores
+      let errorMessage;
+      if (error.response) {
+        // El servidor respondió con un status code fuera del rango 2xx
+        errorMessage = error.response.data?.detail || 
+                      error.response.data?.message || 
+                      `Error ${error.response.status}: Por favor verifica tus credenciales.`;
+      } else if (error.request) {
+        // La petición fue hecha pero no se recibió respuesta
+        errorMessage = 'No se pudo conectar con el servidor. Por favor intenta más tarde.';
+      } else {
+        // Error al configurar la petición
+        errorMessage = 'Error al procesar la solicitud.';
+      }
+      
+      return { error: errorMessage };
     }
   },
 
   // Registrar un nuevo usuario
-  signUp: async (email, password, userData) => {
+  signUp: async (userData) => {
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: userData,
-        },
-      });
-      
-      if (error) {
-        return { error: handleSupabaseError(error) };
-      }
-      
-      // Si el registro es exitoso, crear el perfil en la tabla de perfiles
-      if (data?.user) {
-        const { error: profileError } = await supabase
-          .from('perfiles')
-          .insert([
-            { 
-              id_usuario: data.user.id,
-              nombre: userData.nombre,
-              correo: email,
-              carrera: userData.carrera,
-              ano_estudio: userData.ano_estudio,
-              grupo: userData.grupo
-            }
-          ]);
-          
-        if (profileError) {
-          console.error('Error al crear perfil:', profileError);
-          return { 
-            data, 
-            warning: 'Usuario creado pero hubo un problema al configurar el perfil.' 
-          };
+      const response = await axios.post(`${API_URL}/auth/register`, userData, {
+        headers: {
+          'Content-Type': 'application/json'
         }
-      }
-      
-      return { data };
+      });
+      return { data: response.data };
     } catch (error) {
-      console.error('Error en el servicio de autenticación (signUp):', error);
-      return { error: { message: 'Error al registrar usuario', details: error.message } };
+      console.error('Error al registrar:', error.response || error);
+      const errorMessage = error.response?.data?.detail || 'Error al registrar usuario';
+      return { error: errorMessage };
     }
   },
 
   // Cerrar sesión
   signOut: async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        return { error: handleSupabaseError(error) };
-      }
-      
-      await SecureStore.deleteItem('user-token');
+      localStorage.removeItem('user-token');
+      localStorage.removeItem('user-data');
       return { success: true };
     } catch (error) {
-      console.error('Error en el servicio de autenticación (signOut):', error);
-      return { error: { message: 'Error al cerrar sesión', details: error.message } };
+      console.error('Error al cerrar sesión:', error);
+      return { error: 'Error al cerrar sesión' };
     }
   },
 
   // Recuperar contraseña
   resetPassword: async (email) => {
     try {
-      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + '/reset-password',
-      });
-      
-      if (error) {
-        return { error: handleSupabaseError(error) };
-      }
-      
-      return { data, success: true };
+      const response = await axios.post(`${API_URL}/auth/reset-password`, 
+        { email },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      return { data: response.data };
     } catch (error) {
-      console.error('Error en el servicio de autenticación (resetPassword):', error);
-      return { error: { message: 'Error al enviar el correo de recuperación', details: error.message } };
+      console.error('Error al solicitar reset de contraseña:', error.response || error);
+      const errorMessage = error.response?.data?.detail || 'Error al solicitar cambio de contraseña';
+      return { error: errorMessage };
     }
   },
 
-  // Verificar si el usuario está autenticado
-  isAuthenticated: async () => {
+  // Obtener sesión actual
+  getCurrentSession: () => {
     try {
-      const token = await SecureStore.getItem('user-token');
+      const token = localStorage.getItem('user-token');
+      const userData = localStorage.getItem('user-data');
       
-      if (!token) {
-        return { authenticated: false };
+      if (token && userData) {
+        return { 
+          data: { 
+            token,
+            user: JSON.parse(userData)
+          }
+        };
       }
       
-      const { data, error } = await supabase.auth.getUser(token);
-      
-      if (error || !data?.user) {
-        await SecureStore.deleteItem('user-token');
-        return { authenticated: false, error: error ? handleSupabaseError(error) : null };
-      }
-      
-      return { authenticated: true, user: data.user };
+      return { data: null };
     } catch (error) {
-      console.error('Error en el servicio de autenticación (isAuthenticated):', error);
-      return { authenticated: false, error: { message: 'Error al verificar autenticación', details: error.message } };
+      console.error('Error al obtener sesión:', error);
+      return { error: 'Error al obtener la sesión actual' };
     }
-  },
-
-  // Actualizar datos del usuario
-  updateUser: async (userData) => {
-    try {
-      const { data, error } = await supabase.auth.updateUser({
-        data: userData,
-      });
-      
-      if (error) {
-        return { error: handleSupabaseError(error) };
-      }
-      
-      return { data, success: true };
-    } catch (error) {
-      console.error('Error en el servicio de autenticación (updateUser):', error);
-      return { error: { message: 'Error al actualizar datos de usuario', details: error.message } };
-    }
-  },
+  }
 };
 
 export default authService;

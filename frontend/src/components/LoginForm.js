@@ -41,18 +41,28 @@ const LoginForm = () => {
     });
   };
   
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
+    
     if (!formData.email || !formData.password) {
       setError('Por favor completa todos los campos');
       return;
     }
-    login({
-      id: 'user-' + Math.random().toString(36).substr(2, 9),
-      nombre: formData.email.split('@')[0],
-      correo: formData.email,
-      rol: 'estudiante'
-    });
+
+    try {
+      const result = await login(formData.email, formData.password);
+      
+      if (result.error) {
+        setError(typeof result.error === 'string' ? result.error : result.error.message || 'Error al iniciar sesión');
+        return;
+      }
+      
+      // El login fue exitoso - AuthContext se encargará de la redirección
+    } catch (err) {
+      setError('Error al iniciar sesión. Por favor intenta de nuevo.');
+      console.error('Login error:', err);
+    }
   };
   
   const handleRegisterSubmit = (e) => {
